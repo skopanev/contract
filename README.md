@@ -239,7 +239,7 @@ PM записывает точный authority question в ticket и отпра�
 | Событие | Что получает агент |
 |---|---|
 | SessionStart: startup / resume / clear / compact | Полную роль, goal с ticket, finish, шаги, правила и доступные MCP — непосредственно из Equill |
-| UserPromptSubmit | Только релевантные lessons/findings с учётом project/ticket/module/role/process |
+| UserPromptSubmit | До 30 релевантных lessons/findings с учётом project/ticket/module/role/process |
 
 Hook не переписывает contract и не проверяет наличие отдельных полей role/goal/finish. Тело ticket читается через NTK. При compaction полный contract возвращается; на каждом prompt он не дублируется. Специального hook на `LAND` нет.
 
@@ -247,7 +247,11 @@ Hook не переписывает contract и не проверяет нали�
 
 Lane не пишет в Equill: предложения сохраняет в ticket. PM решает, какие project findings/lessons записать, заменить или отозвать. Роли/процессы/правила и global scope меняет GM. Hooks всегда read-only; автоматической записи при SessionEnd нет.
 
-Equill grant PM разрешает `append`/`supersede`/`revoke` только для `agent.finding.v1` и `agent.lesson.v1`; project coordinate принудительно равен проекту PM. Запись ролей/процессов/правил и null/global scope запрещена; такие предложения передаются GM. Equill — immutable ledger: изменения сохраняют историю и инкрементально синхронизируются в vector index для будущих hooks.
+Если PM предлагает глобальную запись памяти, он передаёт предложение и evidence GM. GM принимает решение и записывает от своего имени; PM не меняет собственные actor/role/project для обхода ограничения.
+
+Одна запись памяти — одна мысль: целимся в 15 слов, максимум 20 слов в тексте lesson/finding. Evidence и ограничения вывода сохраняются отдельно; старые записи не обрезаются автоматически. Этот лимит не относится к полной роли, процессу и правилам на старте.
+
+Equill grant PM разрешает `append`/`supersede`/`revoke` только для `agent.finding.v1` и `agent.lesson.v1`. У каждого проекта отдельный actor `<project>-pm`; grant проверяет точное значение payload `/project=["<project>"]`, а для lessons также `/scope="project"`. Проверяются и новая запись, и заменяемая/отзываемая; переменные окружения и MCP coordinates не дают полномочий. Запись ролей/процессов/правил и null/global scope запрещена; такие предложения передаются GM. Equill — immutable ledger: изменения сохраняют историю и инкрементально синхронизируются в vector index для будущих hooks.
 
 Канонические docs проекта сверяются с настроенными внешними specifications и финальными решениями tickets. После review и landing изменённых docs централизованный sync обновляет индекс. Индексируется только каноническая ветка, не worktrees; локальный git hook не является единственной гарантией. Equill ledger и Git — источники истины, Qdrant — восстанавливаемый индекс.
 
@@ -287,9 +291,9 @@ Permit хранится в ticket: `permit_id`, `repository_id`, `remote`, `targ
 
 Hooks подключаются локально к конкретным Lane/PM panes для Claude и Codex, не глобально. `EQUILL_ACTOR`, `EQUILL_ROLE`, `EQUILL_PROCESS`, `EQUILL_RULES` и служебный `EQUILL_PROFILE` задаются launcher для этой роли; `EQUILL_STORE` — из конфигурации окружения. Координаты задачи — из раздела 2. Общий глобальный actor не задаётся.
 
-Для Lane: `EQUILL_ACTOR=lane`, `EQUILL_ROLE=lane`, `EQUILL_PROCESS=lane-unit`, `EQUILL_RULES=comm`, `EQUILL_PROFILE=lane`. Process IDs PM/GM — из раздела 1. Codex Lane/PM panes используют отдельный pane-local `CODEX_HOME` внутри `<project>/.runtime`; глобальные hooks памяти не используются.
+Для Lane: `EQUILL_ACTOR=lane`, `EQUILL_ROLE=lane`, `EQUILL_PROCESS=lane-unit`, `EQUILL_RULES=comm`, `EQUILL_PROFILE=lane`. Lane не наследует role/process/rules родительского PM/GM. Для PM: `EQUILL_ACTOR=<project>-pm`, `EQUILL_ROLE=pm`; для GM actor/role — `gm`. Process IDs PM/GM — из раздела 1. Codex Lane/PM panes используют отдельный pane-local `CODEX_HOME` внутри `<project>/.runtime`; глобальные hooks памяти не используются.
 
-SessionStart получает полный LLM-formatted contract без лимита токенов. Ошибка или пустой ответ Equill прерывает старт; timeout — 600 секунд. UserPromptSubmit передаёт `--budget 512`, использует vector retrieval без FTS fallback; timeout — 45 секунд. Сбой даёт warning и продолжает prompt без delta. Форматирует и считает бюджет Equill; hook не режет ответ.
+SessionStart получает полный LLM-formatted contract без лимита токенов. Ошибка или пустой ответ Equill прерывает старт; timeout — 600 секунд. UserPromptSubmit передаёт `--budget-records 30` без токенового лимита, использует vector retrieval без FTS fallback; timeout — 45 секунд. Сбой даёт warning и продолжает prompt без delta. Отбор, лимит записей и форматирование выполняет Equill; hook не режет ответ. На время проверки контрактов vector projection отключается через Equill, а prompt retrieval явно выключается без FTS-подмены; системный Qdrant не изменяется.
 
 Embedding обслуживается одним shared Ollama daemon, не отдельным процессом с моделью для каждой Lane. Целевая конфигурация: Qwen3-Embedding-8B Q8, Metal, 4096 dimensions, keep-alive 30 минут.
 
