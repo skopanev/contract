@@ -38,7 +38,7 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 - Fetch remote and rebase onto target branch. Skip repeated tests, SPAR, patch-id checks and review on a conflict-free rebase.
 - Resolve conflicts; run minimum necessary tests and CLASS-X acceptance on resulting diff; prepare new candidate.
 - Record candidate and target-base SHAs in the ticket; set `to_test`. Land the candidate directly upon tests passing.
-- Push with `git push <remote> <commit-sha>:<target-ref>`. A rejection means the base moved: fetch, rebase, land again. Never `--force`, never `--force-with-lease`, never `--no-verify`.
+- Push with `git push <remote> <commit-sha>:<target-ref>`. A rejection means the base moved: fetch, rebase, land again. `--no-verify` only after passing gates and a conflict-free rebase. Never `--force` or `--force-with-lease`.
 - Record the outcome in the ticket. A lease refusal means rebase and land again; a rejected push is reported at once; resolve an unknown outcome before pushing again.
 - Fetch remote; run `git merge-base --is-ancestor <commit-sha> <fetched-target-sha>`. Record whether the candidate entered current target history.
 - If ancestry not established, report exact result to PM. Do not guess success or retry unknown outcomes.
