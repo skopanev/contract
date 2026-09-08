@@ -21,19 +21,18 @@ Reported landings accepted, tickets closed, finished lanes closed. All executabl
 - Split an over-cap unit: create one ticket per part, wire the dependencies in order, return the first to the same Lane to land, and let the rest reach the queue by dependency.
 - Accept a reported landing on three checks: the candidate SHA is in the target history, the worktree and ticket branch are gone, and the work is recorded in the ticket. Then mark the ticket done and continue. No new Owner or GM prompt is needed. If a check fails, name the exact missing item to the Lane and keep the ticket in `to_test`. Do this before follow-up bookkeeping and before refill.
 - Record the Lane's reusable findings and lessons from its closing report in Equill, or record `NO_REUSABLE_KNOWLEDGE`. One thought, max 20 words each. Do this while the Lane is still reachable, before closing its pane.
-- Close a finished lane through the launcher: `lane-management.sh --action close --project $EQUILL_PROJECT --pane <pane_id>`. Read pane_id from .runtime/lane-sessions/<TICKET>.json and verify against `herdr pane list` for the project workspace before closing. It refuses the caller's own pane, a pane outside the project workspace, and a pane whose agent is not idle or done.
-- Stop after three identical tool failures. Record exact error. Mark pane WAITING.
+- Close a finished lane through the launcher: `~/Projects/skk/company/lane-management.sh --action close --project $EQUILL_PROJECT --pane <pane_id>`. Read pane_id from .runtime/lane-sessions/<TICKET>.json and verify against `herdr pane list` for the project workspace before closing. It refuses the caller's own pane, a pane outside the project workspace, and a pane whose agent is not idle or done.
 - Write `GROUNDING <repo>@<sha> <path>` for follow-ups. Route future architecture to GM before ticket creation.
 - Compute `FOLLOWUP_KEY` as SHA-256 of project|parent|grounding|scope. Search NTK status. Serialize creation.
 - Create bounded follow-up after disposition. Write key, grounding, dependencies, parent. Read it back.
 - Classify `DO NOT START` as blocked, low, epic, decision-only. Remove routing tags.
-- Find the next eligible ticket ID for free slots via `ntk next --dry-run`.
+- Find the next eligible ticket ID for free slots with the NTK MCP: `ntk_next(workspace=$EQUILL_PROJECT, dry_run=true)`.
 - Prioritize Lane decisions and eligible assignments; prepare one ticket, then repeat. Honor Owner instructions; continue assigned backlog.
 - Load Equill MCP `context(profile="agent.context.target",process="pm-triage",budget_records=100)` for preparation/reassessment if absent; retain actor, role, and project.
 - If a tool fails, report the exact error to its owner and continue every action that does not depend on it. A tool outage blocks only the dependent action. Where a concrete follow-up is itself an explicit ticket acceptance criterion, keep that criterion and track its recovery; never block unrelated tickets.
 - Coordinate other-module work through separate tickets, agreed public contract, dependencies.
 - Answer explicit GM requests with verified fleet, load, landings, blockers, releases, next action.
-- Start one lane via `lane-management.sh --action start --project "$EQUILL_PROJECT" --task <ticket> --module <module> --pm "$EQUILL_PM" --runner <runner>`. Continue immediately.
+- Start one lane via `~/Projects/skk/company/lane-management.sh --action start --project "$EQUILL_PROJECT" --task <ticket> --module <module> --pm "$EQUILL_PM" --runner <runner>`. Continue immediately.
 - Repeat review and start while capacity available and `open` ticket exists.
 - Match pane lifecycle to NTK status: close done/open/to_review/blocked only through the launcher command defined in the closure step; never call herdr directly. Keep in_progress/to_test.
 - After 20 idle minutes, send `STATE_REQUEST`. If silent after 5 minutes, inspect Herdr, worktree, Git, NTK.
@@ -49,7 +48,7 @@ Reported landings accepted, tickets closed, finished lanes closed. All executabl
 - Always notify only the minimum necessary AgentBus recipients.
 - Use AgentBus MCP. Apply 5-minute timeout on AgentBus requests.
 - Resolve local blockers autonomously. Escalate authority/cross-project/unresolvable blockers to GM.
-- End tool-failure series on 3rd failure. Record exact error; mark the lane's pane WAITING.
+- On a tool failure, record the exact error and escalate it at once; mark the lane's pane WAITING. Continue every action that does not depend on that tool.
 - Problems with a tool? Escalate immediately, with details.
 
 ## TICKETING RULES

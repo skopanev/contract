@@ -12,9 +12,9 @@ Land `EQUILL_TICKET`.
 Closing report sent to PM; landing and cleanup recorded in the ticket; final response saved.
 
 ## STEPS
-- Claim the assigned ticket with `ntk start "$EQUILL_TICKET"`.
+- Claim the assigned ticket with the NTK MCP: `ntk_start(workspace=$EQUILL_PROJECT, id=$EQUILL_TICKET)`.
 - If NTK refuses, send `BLOCKED EQUILL_TICKET <exact NTK error>` to PM. Neither implement nor override another claimant.
-- Read `ntk show "$EQUILL_TICKET"` and applicable repository instructions. Verify assigned module against project registry; confirm ticket fits its boundary.
+- Read the ticket with the NTK MCP: `ntk_show(workspace=$EQUILL_PROJECT, id=$EQUILL_TICKET)`, and applicable repository instructions. Verify assigned module against project registry; confirm ticket fits its boundary.
 - If scope spans modules, ask PM to split into dependent tickets. Hold affected work.
 - No independent work left: record the ticket dependency so NTK cannot select it prematurely, return the ticket to `open`, save the work in its retained branch, and finish your response. On resume, move it to `in_progress` and verify integration before landing.
 - Fetch configured remote and target branch. Verify ticket premise against fresh source, deployed infrastructure, or live path.
@@ -24,7 +24,6 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 - After credible hits, inspect `get_code_snippet`; use `trace_path` only for relationships and `semantic_query` only after FTS misses.
 - Before creating modules or functions, check `SIMILAR_TO` through `query_graph`; verify against fresh default-branch source and worktree delta.
 - Record `CBM PREFLIGHT`: repositories, entry points, owners, reuse/duplicates, gaps, and verified files.
-- Never start watchers or index worktrees; do not repeat preflight per prompt or after conflict-free rebases.
 - On CBM failure, record exact error; inspect source. If scope/contracts remain unclear, send `BLOCKED EQUILL_TICKET <exact error>` to PM.
 - Classify `CLASS-X`: money, migrations/data loss, concurrency/idempotency/retries, security/PII, public contracts, irreversible behavior, plus project risks.
 - `CLASS-X` only: planning SPAR before implementation. Request all defects and needless complexity; fix blockers; stop at `CLEAR`; five rounds maximum.
@@ -38,7 +37,6 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 - Fetch remote and rebase onto target branch. Skip repeated tests, SPAR, patch-id checks and review on a conflict-free rebase.
 - Resolve conflicts; run minimum necessary tests and CLASS-X acceptance on resulting diff; prepare new candidate.
 - Record candidate and target-base SHAs in the ticket; set `to_test`. Land the candidate directly upon tests passing.
-- Never edit or rebase after the verified base is fixed. Re-verify the base instead of pushing a stale candidate.
 - Push with `git push --force-with-lease=<target-ref>:<base-sha> <remote> <commit-sha>:<target-ref>`. Never use plain `--force` and never `--no-verify`: the lease is what refuses a stale base, and the hooks are what run the tests.
 - Record the outcome in the ticket. A lease refusal means rebase and land again; a rejected push is reported at once. Resolve an unknown outcome before pushing again. Report to PM once, at the closing step.
 - Fetch remote; run `git merge-base --is-ancestor <commit-sha> <fetched-target-sha>`. Record whether the candidate entered current target history.
@@ -66,6 +64,8 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 - Never delete unsaved work.
 - While waiting for PM, keep the ticket in its current state, stay available, and keep the slot yours.
 - Replacement keeps project, ticket, module, and status. Inspect retained work and delta before continuing.
+- Never edit or rebase after the verified base is fixed. Re-verify the base instead of pushing a stale candidate.
+- Never start watchers and never index a worktree. Do not repeat the CBM preflight per prompt or after a conflict-free rebase.
 
 ## PROJECT LIMITS
 - finik: max_lanes 4
