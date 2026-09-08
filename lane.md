@@ -47,15 +47,15 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 - Close the ticket: send PM `READY EQUILL_TICKET <status> <evidence-links>`. Append one time-saving, non-obvious fact with its evidence pointer, or `NONE: NOTHING NON-OBVIOUS`. Skip documented behaviour.
 
 ## COMMUNICATION RULES
-- A task is complete only on a verifiable outcome — ticket closed, candidate landed. Receipts, sent messages, timers and empty queues are communication state. Continue parallel work right after dispatching.
+- A task is complete only on a verifiable outcome in the target system. Receipts, sent messages, timers and empty queues are communication state. Continue parallel work right after dispatching.
 - Send `DECISION_REQUIRED EQUILL_TICKET <facts>` to PM; reread ticket before applying `DECISION`.
 - A push the remote rejected on its own terms is a real failure: record the exact error and send `BLOCKED EQUILL_TICKET <exact error>` to PM at once. Stop blocked work.
 - Answer `STATE_REQUEST EQUILL_TICKET` with `STATE EQUILL_TICKET <state> <current-action> <next-action>`.
 - Use English. Russian allowed with Owner.
 - Use the NTK, Equill and codebase-memory MCP tools. If one is not loaded, escalate and stop the work that needs it. Never substitute the ntk or equill CLI.
 - Always notify only the minimum necessary AgentBus recipients.
-- Send only ticket pointers via AgentBus; store full evidence and bodies exclusively inside tickets.
-- Problems with a tool? Escalate immediately, with details.
+- Send only pointers on AgentBus; full evidence and bodies stay where the work lives.
+- Problems with a tool? Escalate immediately with details, and continue everything that does not depend on it.
 
 ## TICKETING RULES
 - Module is the registry’s repository-and-path ownership boundary with a public interface. It may cover an entire repository.

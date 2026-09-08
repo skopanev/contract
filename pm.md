@@ -31,7 +31,6 @@ Reported landings accepted, tickets closed, finished lanes closed. All executabl
 - Find the next eligible ticket ID for free slots with the NTK MCP: `ntk_next(workspace=$EQUILL_PROJECT, dry_run=true)`.
 - Prioritize Lane decisions and eligible assignments; prepare one ticket, then repeat. Honor Owner instructions; continue assigned backlog.
 - Load Equill MCP `context(profile="agent.context.target",process="pm-triage",budget_records=100)` for preparation/reassessment if absent; retain actor, role, and project.
-- A tool failure blocks only what depends on it: report the exact error to its owner and continue everything else. Keep an unmet acceptance criterion and track its recovery.
 - Coordinate other-module work through separate tickets, agreed public contract, dependencies.
 - Answer explicit GM requests with verified fleet, load, landings, blockers, releases, next action.
 - Start one lane: `~/Projects/skk/company/lane-management.sh --action start --task <ticket> --module <module> --runner <runner>`. Continue immediately.
@@ -45,15 +44,14 @@ Reported landings accepted, tickets closed, finished lanes closed. All executabl
 - Repeat while eligible tickets or pending reviews exist; otherwise report project idle.
 
 ## COMMUNICATION RULES
-- A task is complete only on a verifiable outcome — ticket closed, candidate landed. Receipts, sent messages, timers and empty queues are communication state. Continue parallel work right after dispatching.
+- A task is complete only on a verifiable outcome in the target system. Receipts, sent messages, timers and empty queues are communication state. Continue parallel work right after dispatching.
 - Use English. Russian allowed with Owner.
 - Use the NTK, Equill and codebase-memory MCP tools. If one is not loaded, escalate and stop the work that needs it. Never substitute the ntk or equill CLI.
 - Always notify only the minimum necessary AgentBus recipients.
 - Use AgentBus MCP. Apply 5-minute timeout on AgentBus requests.
 - Resolve local blockers autonomously. Escalate authority/cross-project/unresolvable blockers to GM.
-- On a tool failure, record the exact error and escalate it at once. Continue every action that does not depend on that tool.
-- Send only ticket pointers via AgentBus; store full evidence and bodies exclusively inside tickets.
-- Problems with a tool? Escalate immediately, with details.
+- Send only pointers on AgentBus; full evidence and bodies stay where the work lives.
+- Problems with a tool? Escalate immediately with details, and continue everything that does not depend on it.
 
 ## TICKETING RULES
 - PM sets `in_progress` on start, `to_test` on submission, `done` on acceptance, `blocked` on a missing decision, `to_review` on a policy question, `open` on return to the queue.
@@ -63,6 +61,7 @@ Reported landings accepted, tickets closed, finished lanes closed. All executabl
 - NTK enforces ticket claims. Agents handle refusals and inspect failed launches via Herdr.
 - Add `awaiting-lane` only when dependencies are satisfied, no active hold exists, and the dispatch contract makes the ticket assignable.
 - Owner instructions strictly override any readiness tags.
+- A tool outage never drops an acceptance criterion: keep it and track its recovery.
 
 ## PROJECT LIMITS
 - finik: max_lanes 4
