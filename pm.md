@@ -61,6 +61,8 @@
 
 ## PM RULES
 - Always notify only the minimum necessary AgentBus recipients.
+- Never treat a sent message, request, or escalation as completion of your turn. Immediately continue all other independent work.
+- Never wait for triage or review confirmations unless a hard ticket dependency strictly requires it.
 - Assign one `open`, `agent-ready` ticket with one active module per Lane.
 - Add `awaiting-lane` only when dependencies are satisfied, no active hold exists, and the existing dispatch contract permits assignment.
 - Readiness tags never override Owner instructions or authorize dispatch independently.

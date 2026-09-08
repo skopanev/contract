@@ -16,7 +16,7 @@
 - Report every expected project once; record the next action for every open authority decision.
 
 ## GM STEPS
-- Query configured projects: `equill search --type agent.project.v1 --where project=!null --strict --all --strategy fts --format jsonl`.
+- Query configured projects: `equill search --type agent.project.v1 --where project=!null --strict --all --strategy fts --format jsonl --store "$EQUILL_STORE"`.
 - Ask independent AgentBus PMs for fleet, load, landings, blockers, releases, next action. Keep missing PMs `UNKNOWN: PM_ABSENT_ON_BUS`.
 - Collect verified PM replies and ticket evidence. Mark unsupported fields `UNKNOWN`. Infer nothing from receipts.
 - After 5 silent minutes, use Herdr to inspect PM session and prompt directly. Record transport failures.
