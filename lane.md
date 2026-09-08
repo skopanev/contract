@@ -16,7 +16,8 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 - If NTK refuses, send `BLOCKED EQUILL_TICKET <exact NTK error>` to PM. Neither implement nor override another claimant.
 - Read the ticket with the NTK MCP: `ntk_show(workspace=$EQUILL_PROJECT, id=$EQUILL_TICKET)`, and applicable repository instructions. Verify assigned module against project registry; confirm ticket fits its boundary.
 - If scope spans modules, ask PM to split into dependent tickets. Hold affected work.
-- No independent work left: record the ticket dependency so NTK cannot select it prematurely, return the ticket to `open`, save the work in its retained branch, and finish your response. On resume, move it to `in_progress` and verify integration before landing.
+- No independent work left: record the dependency, return the ticket to `open`, save the work in its retained branch, finish your response.
+- On resume, move the ticket to `in_progress` and verify integration before landing.
 - Fetch configured remote and target branch. Verify ticket premise against fresh source, deployed infrastructure, or live path.
 - If premise is contradicted, record evidence in ticket; send `BLOCKED EQUILL_TICKET <exact contradiction>` to PM.
 - Create dedicated worktree from verified base. For resumed work or corrections, reuse this ticket’s saved branch and worktree.
@@ -29,7 +30,7 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 - `CLASS-X` only: planning SPAR before implementation. Request all defects and needless complexity; fix blockers; stop at `CLEAR`; five rounds maximum.
 - After five non-clear rounds, record remaining findings; send `DECISION_REQUIRED EQUILL_TICKET <facts>` to PM. Hold work; reset only after task change.
 - Implement the smallest complete ticket scope inside your module. Keep it extensible, simple, and reliable. NO OVERENGINEERING.
-- Measure the diff after implementing. Over the unit cap of 10 files or 800 lines, stop and send `DECISION_REQUIRED EQUILL_TICKET <files> <lines>` to PM; hold the work until he splits it.
+- Measure the diff. Over 10 files or 800 lines, send `DECISION_REQUIRED EQUILL_TICKET <files> <lines>` and hold until PM splits it.
 - Run minimum necessary tests. Record commands and exit codes in ticket. Fix the failures; report one you cannot fix inside your module as a blocker with its exact output.
 - Acceptance SPAR for `CLASS-X` final diffs: request all defects and needless complexity; fix blockers; stop at `CLEAR`; maximum five rounds.
 - After five non-clear rounds, record remaining findings; send `DECISION_REQUIRED EQUILL_TICKET <facts>` to PM. Hold affected work.
@@ -38,7 +39,7 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 - Resolve conflicts; run minimum necessary tests and CLASS-X acceptance on resulting diff; prepare new candidate.
 - Record candidate and target-base SHAs in the ticket; set `to_test`. Land the candidate directly upon tests passing.
 - Push with `git push --force-with-lease=<target-ref>:<base-sha> <remote> <commit-sha>:<target-ref>`. Never use plain `--force` and never `--no-verify`: the lease is what refuses a stale base, and the hooks are what run the tests.
-- Record the outcome in the ticket. A lease refusal means rebase and land again; a rejected push is reported at once. Resolve an unknown outcome before pushing again. Report to PM once, at the closing step.
+- Record the outcome in the ticket. A lease refusal means rebase and land again; a rejected push is reported at once; resolve an unknown outcome before pushing again.
 - Fetch remote; run `git merge-base --is-ancestor <commit-sha> <fetched-target-sha>`. Record whether the candidate entered current target history.
 - If ancestry not established, report exact result to PM. Do not guess success or retry unknown outcomes.
 - After verified landing, remove dedicated worktree and local ticket branch. Record cleanup in ticket. Never delete the shared target branch.
@@ -46,7 +47,7 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 - Close the ticket: send PM `READY EQUILL_TICKET <status> <evidence-links>`. Append one time-saving, non-obvious fact with its evidence pointer, or `NONE: NOTHING NON-OBVIOUS`. Skip documented behaviour.
 
 ## COMMUNICATION RULES
-- Treat a task as complete only upon verifiable outcome in the target system (ticket closed, candidate landed). Delivery receipts, sent messages, timers and empty queues indicate communication state. Continue parallel work independently immediately after dispatching a request.
+- A task is complete only on a verifiable outcome — ticket closed, candidate landed. Receipts, sent messages, timers and empty queues are communication state. Continue parallel work right after dispatching.
 - Send `DECISION_REQUIRED EQUILL_TICKET <facts>` to PM; reread ticket before applying `DECISION`.
 - A push the remote rejected on its own terms is a real failure: record the exact error and send `BLOCKED EQUILL_TICKET <exact error>` to PM at once. Stop blocked work.
 - Answer `STATE_REQUEST EQUILL_TICKET` with `STATE EQUILL_TICKET <state> <current-action> <next-action>`.
