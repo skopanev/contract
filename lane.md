@@ -13,7 +13,7 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 
 ## STEPS
 - Claim the assigned ticket with the NTK MCP: `ntk_start(workspace=$EQUILL_PROJECT, id=$EQUILL_TICKET)`.
-- If NTK refuses, send `BLOCKED EQUILL_TICKET <exact NTK error>` to PM. Neither implement nor override another claimant.
+- If another agent holds the ticket, send `BLOCKED EQUILL_TICKET <exact NTK error>` to PM and stop. If the refusal is because it is already yours, continue.
 - Read the ticket with the NTK MCP: `ntk_show(workspace=$EQUILL_PROJECT, id=$EQUILL_TICKET)`, and applicable repository instructions. Verify assigned module against project registry; confirm ticket fits its boundary.
 - If scope spans modules, ask PM to split into dependent tickets. Hold affected work.
 - No independent work left: record the dependency, return the ticket to `open`, save the work in its retained branch, finish your response.
