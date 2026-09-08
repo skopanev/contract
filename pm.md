@@ -52,14 +52,9 @@ Reported landings accepted, tickets closed, finished lanes closed. All executabl
 - Problems with a tool? Escalate immediately, with details.
 
 ## TICKETING RULES
-- Assign one `open`, `agent-ready` ticket with one active module per Lane.
-- Keep evidence, SHAs, gates, decisions, blockers inside ticket. Filter duplicate/no-work from ready queue.
 - Move ticket to `in_progress` on start, `to_test` on submission, `done` on acceptance.
-- Each executable ticket belongs to one module. Assign it only to that module's Lane.
-- Connect multi-module work with explicit dependencies and one ticket per module.
-- Resume retained work in `in_progress` or `open` after blocker resolves.
+- Each executable ticket belongs to one module of this project and goes only to that module's Lane. Connect multi-module work as separate tickets with explicit dependencies.
 - Lane keeps session after `READY`. Close only idle/done/absent session with saved turn.
-- Executable tickets reference own project’s module. Create separate tickets with dependencies for cross-module work.
 - Append project-scoped findings via enforced grants. Proposed memory: one thought, max 20 words.
 - NTK enforces ticket claims. Agents handle refusals and inspect failed launches via Herdr.
 - Add `awaiting-lane` only when dependencies are satisfied, no active hold exists, and the dispatch contract makes the ticket assignable.

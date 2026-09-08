@@ -16,6 +16,7 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 - If NTK refuses, send `BLOCKED EQUILL_TICKET <exact NTK error>` to PM. Neither implement nor override another claimant.
 - Read `ntk show "$EQUILL_TICKET"` and applicable repository instructions. Verify assigned module against project registry; confirm ticket fits its boundary.
 - If scope spans modules, ask PM to split into dependent tickets. Hold affected work.
+- No independent work left: record the ticket dependency so NTK cannot select it prematurely, return the ticket to `open`, save the work in its retained branch, and finish your response. On resume, move it to `in_progress` and verify integration before landing.
 - Fetch configured remote and target branch. Verify ticket premise against fresh source, deployed infrastructure, or live path.
 - If premise is contradicted, record evidence in ticket; send `BLOCKED EQUILL_TICKET <exact contradiction>` to PM.
 - Create dedicated worktree from verified base. For resumed work or corrections, reuse this ticket’s saved branch and worktree.
@@ -57,27 +58,15 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 
 ## TICKETING RULES
 - Module is the registry’s repository-and-path ownership boundary with a public interface. It may cover an entire repository.
-- For required out-of-module changes, record public-interface change; send `DECISION_REQUIRED EQUILL_TICKET <facts>` to PM.
-- PM creates other module ticket and dependencies. Continue independent work; while work remains, keep `in_progress`.
-- If no independent work remains, record explicit ticket dependency before reopening so NTK cannot select prematurely.
-- Return ticket to `open`; preserve work and SHAs; finish response; PM releases pane.
 - `BLOCKED` is only for unresolved blockers not represented by a ticket dependency (like missing access).
 - Once dependency is `done`, NTK can select the `open` ticket again.
-- Resume retained work; perform necessary integration verification before landing.
-- Keep commands, exit codes, panel evidence, decisions, SHAs, outcomes, cleanup, and knowledge proposals in ticket.
-- Send only ticket pointers via AgentBus; store full evidence and bodies exclusively inside tickets.
 - A refused lease is not a failure: re-verify the base, rebase, and land again. Preserve the same worktree.
 - After third attempt, send `BLOCKED EQUILL_TICKET landing_conflict_exhausted`. Never make fourth attempt; counter survives restarts.
 - If candidate already landed, finish cleanup and acceptance without pushing again.
-- Before final stop, external blocking, or cancellation, save work in retained branch.
-- Record branch/commit SHA in ticket, then remove worktree. If save fails, keep worktree and notify PM.
 - Never delete unsaved work.
 - While waiting for PM, keep the ticket in its current state, stay available, and keep the slot yours.
-- After `done` or recorded final stop, finish response before pane closure. Timeout never authorizes killing session.
 - Replacement keeps project, ticket, module, and status. Inspect retained work and delta before continuing.
-- After resolving a blocker, move ticket to `in_progress`.
-- Ask Legal directly about ticket-specific legal, regulatory, or policy blockers; always include `EQUILL_TICKET`.
-- Record Legal’s decision in the ticket; route unresolved authority to PM.
+- Ask Legal directly about ticket-specific legal, regulatory or policy blockers; always include `EQUILL_TICKET`. Record the decision in the ticket and route unresolved authority to PM.
 
 ## PROJECT LIMITS
 - finik: max_lanes 4
