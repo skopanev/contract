@@ -44,25 +44,25 @@ PM sends `DONE EQUILL_TICKET`, or final stop is recorded and all work preserved;
 - Acceptance SPAR for `CLASS-X` final diffs: request all defects and needless complexity; fix blockers; stop at `CLEAR`; maximum three rounds.
 - After three non-clear rounds, record remaining findings; send `DECISION_REQUIRED EQUILL_TICKET <facts>` to PM. Hold affected work.
 - Save verification evidence, SPAR findings, decisions, and artifacts in ticket. Commit the verified implementation.
-- Fetch remote and rebase onto target branch. Conflict-free rebase requires no repeated tests, SPAR, patch-id checks, or review.
+- Fetch remote and rebase onto target branch. Skip repeated tests, SPAR, patch-id checks and review on a conflict-free rebase.
 - Resolve conflicts; run minimum necessary tests and CLASS-X acceptance on resulting diff; prepare new candidate.
-- Record candidate and target-base SHAs in the ticket; set `to_test`. Land it yourself — no authorization step.
+- Record candidate and target-base SHAs in the ticket; set `to_test`. Land the candidate directly upon tests passing.
 - On `CORRECTION`, return ticket to `in_progress` and continue in the same worktree.
 - Never edit or rebase after the verified base is fixed. Re-verify the base instead of pushing a stale candidate.
 - Push with `git push --force-with-lease=<target-ref>:<base-sha> <remote> <commit-sha>:<target-ref>`. Never use plain `--force` and never `--no-verify`: the lease is what refuses a stale base, and the hooks are what run the tests.
 - Record the outcome in the ticket. Resolve unknown outcomes before another push; follow landing retry rules. Report to PM once, at the closing step.
-- Fetch remote; run `git merge-base --is-ancestor <commit-sha> <fetched-target-sha>`. Record whether authorized candidate entered current target history.
+- Fetch remote; run `git merge-base --is-ancestor <commit-sha> <fetched-target-sha>`. Record whether the candidate entered current target history.
 - If ancestry not established, report exact result to PM. Do not guess success or retry unknown outcomes.
 - After verified landing, remove dedicated worktree and local ticket branch. Record cleanup in ticket. Never delete the shared target branch.
-- Preserve recovery coordinates; report cleanup error to PM. Cleanup failure is not a new landing.
+- Preserve recovery coordinates; report cleanup error to PM as a distinct post-landing issue.
 - Keep evidence in the ticket. Send PM one closing report: `READY EQUILL_TICKET`, the landing status, the pointers to that evidence, and reusable findings and lessons or `NONE` — each one thought, aim 15 words, maximum 20. Remain available for communication.
 - After PM independently verifies landing and cleanup, sets ticket `done`, and sends `DONE EQUILL_TICKET`, finish your final response.
 - Before pane closure, PM verifies the saved completed turn and this session’s idle/done or absent state.
 
 ## COMMUNICATION RULES
+- Treat a task as complete only upon verifiable outcome in the target system (ticket closed, candidate landed). Delivery receipts, sent messages, timers and empty queues indicate communication state. Continue parallel work independently immediately after dispatching a request.
 - Send `DECISION_REQUIRED EQUILL_TICKET <facts>` to PM; reread ticket before applying `DECISION`.
 - After 3 failed landings, record the exact error and send `BLOCKED EQUILL_TICKET <exact error>` to PM. Stop blocked work.
-- AgentBus MCP: `inbox_STORED` means delivery, not acceptance.
 - Answer `STATE_REQUEST EQUILL_TICKET` with `STATE EQUILL_TICKET <state> <current-action> <next-action>`.
 - Use English. Russian allowed with Owner.
 - Use the NTK, Equill and codebase-memory MCP tools. If one is not loaded, escalate and stop the work that needs it. Never substitute the ntk or equill CLI.
@@ -74,22 +74,22 @@ PM sends `DONE EQUILL_TICKET`, or final stop is recorded and all work preserved;
 - For required out-of-module changes, record public-interface change; send `DECISION_REQUIRED EQUILL_TICKET <facts>` to PM.
 - PM creates other module ticket and dependencies. Continue independent work; while work remains, keep `in_progress`.
 - If no independent work remains, record explicit ticket dependency before reopening so NTK cannot select prematurely.
-- Return ticket to `open` (not `BLOCKED`); preserve work and SHAs; finish response; PM releases pane.
+- Return ticket to `open`; preserve work and SHAs; finish response; PM releases pane.
 - `BLOCKED` is only for unresolved blockers not represented by a ticket dependency (like missing access).
 - Once dependency is `done`, NTK can select the `open` ticket again.
 - Resume retained work; perform necessary integration verification before landing.
 - Keep commands, exit codes, panel evidence, decisions, SHAs, outcomes, cleanup, and knowledge proposals in ticket.
-- Do not duplicate ticket bodies or evidence in AgentBus.
+- Send only ticket pointers via AgentBus; store full evidence and bodies exclusively inside tickets.
 - A refused lease is not a failure: re-verify the base, rebase, and land again. Preserve the same worktree.
 - After third attempt, send `BLOCKED EQUILL_TICKET landing_conflict_exhausted`. Never make fourth attempt; counter survives restarts.
 - If candidate already landed, finish cleanup and acceptance without pushing again.
 - Before final stop, external blocking, or cancellation, save work in retained branch.
 - Record branch/commit SHA in ticket, then remove worktree. If save fails, keep worktree and notify PM.
 - Never delete unsaved work.
-- Waiting for PM is not a final blocker or a free slot.
+- While waiting for PM, keep the ticket in its current state, stay available, and keep the slot yours.
 - After `done` or recorded final stop, finish response before pane closure. Timeout never authorizes killing session.
 - Replacement keeps project, ticket, module, and status. Inspect retained work and delta before continuing.
-- Resolving a blocker does not make the ticket `to_test`.
+- After resolving a blocker, move ticket to `in_progress`.
 - Ask Legal directly about ticket-specific legal, regulatory, or policy blockers; always include `EQUILL_TICKET`.
 - Record Legal’s decision in the ticket; route unresolved authority to PM.
 
