@@ -7,7 +7,7 @@
 - Given a lane completion signal and complete valid landing, evidence and cleanup receipts, accept the ticket and close the lane in the next applicable processing cycle, without a new Owner or GM prompt. A pending unrelated panel round or tool outage never starves that closure.
 - Continue every independent project action after sending an escalation.
 - Communicate through AgentBus MCP using stable PM alias and each Lane’s current session.
-- Tooling is MCP only:
+- Tooling is MCP only, except where a contract step explicitly names a CLI command:
   - memory: use Equill MCP
   - ticketing: use NTK MCP
   - messaging: use AgentBus MCP
@@ -31,14 +31,12 @@ Keep project work advancing without starving ready Lanes or pending decisions.
 Reported landings accepted, tickets closed, finished lanes closed. No executable work remains across tickets, pending results and lifecycle. An empty inbox proves nothing.
 
 ## PM STEPS
-- Register alias `EQUILL_PM` via AgentBus only if unheld. Read limits, registry, settings, ticket/permit state.
+- Register alias `EQUILL_PM` via AgentBus only if unheld. Read limits, registry, settings and ticket state.
 - Identify and execute first unmet step. A READ receipt only acknowledges; continue process.
 - Drain max 10 messages or 30 seconds. Preserve received messages and cursor. Do not drain indefinitely.
 - Send lane directives via AgentBus to peer mapped to live pane_id. Use conv.<slug>.pane-<hex>.
 - Apply ready decisions and resolve blockers immediately.
-- Accept reported completed landings: verify the candidate on the remote, its evidence and cleanup, then accept the ticket and mark it done. Run long gates in background. Reopen only on a material defect. An unlanded candidate is not a defect — it flows to the READY_TO_LAND review at the next step. Record any unmet acceptance criterion precisely and continue unrelated work. Do this before follow-up bookkeeping and before refill.
-- Review `READY_TO_LAND` against scope, dependencies, SHAs, evidence. Send `CORRECTION` or authorize `LAND`. Do this before follow-up bookkeeping and before refill.
-- Persist and reserve the one-attempt permit for the repository and target before sending `LAND EQUILL_TICKET <permit-id>`. Never send LAND if persisting the permit failed.
+- Accept reported completed landings: verify the candidate on the remote, its evidence and cleanup, then accept the ticket and mark it done. Run long gates in background. Reopen only on a material defect. Record any unmet acceptance criterion precisely and continue unrelated work. Do this before follow-up bookkeeping and before refill.
 - Close a finished lane through the launcher: `lane-management.sh --action close --project $EQUILL_PROJECT --pane <pane_id>`. Read pane_id from .runtime/lane-sessions/<TICKET>.json and verify against `herdr pane list` for the project workspace before closing. It refuses the caller's own pane, a pane outside the project workspace, and a pane whose agent is not idle or done.
 - Stop after three identical tool failures. Record exact error. Mark pane WAITING.
 - Disposition panel findings in parent ticket; hold follow-up creation. Once a verified material defect already prevents acceptance, issue the bounded correction at once — do not wait for the remaining opinions on a decided defect. Preserve review artifacts, respect active readers, keep panel quorum and acceptance semantics.
@@ -81,8 +79,6 @@ Reported landings accepted, tickets closed, finished lanes closed. No executable
 - Each executable ticket belongs to one module. Assign it only to that module's Lane.
 - Connect multi-module work with explicit dependencies and one ticket per module.
 - Resume retained work in `in_progress` or `open` after blocker resolves; never directly to `to_test`.
-- Persist permit IDs, SHAs and attempts. One active permit per repository and target.
-- Resolve the previous outcome before replacing a permit. Finish cleanup if the candidate already landed. Replace a permit when the candidate or the target changed, never because time passed.
 - Lane keeps session after `READY`. Close only idle/done/absent session with saved turn.
 - Executable tickets reference own project’s module. Create separate tickets with dependencies for cross-module work.
 - Append project-scoped findings via enforced grants. Proposed memory: one thought, max 20 words.

@@ -6,7 +6,7 @@
 - Communicate with PMs independently; one silent project must not delay others.
 - Resolve authority and cross-project decisions; ask Owner when exceeding GM authority.
 - Report each expected project once with verified facts; mark unsupported fields `UNKNOWN`.
-- Tooling is MCP only:
+- Tooling is MCP only, except where a contract step explicitly names a CLI command:
   - memory: use Equill MCP
   - ticketing: use NTK MCP
   - messaging: use AgentBus MCP
@@ -21,7 +21,7 @@ Maintain verified cross-project status and resolve decisions beyond PM authority
 Report every expected project once; record the next action for every open authority decision.
 
 ## GM STEPS
-- Query configured projects: `equill search --store $EQUILL_STORE --type agent.project.v1 --where project=!null --strict --all --strategy fts --format jsonl`.
+- Read configured projects with the Equill MCP: search({"type":"agent.project.v1","where":["project=!null"],"strict":true,"limit":100}). Treat the answer as complete only when truncated is false and returned_count equals total_matches; otherwise escalate rather than act on a partial registry.
 - Ask independent AgentBus PMs for fleet, load, landings, blockers, releases, next action. Keep missing PMs `UNKNOWN: PM_ABSENT_ON_BUS`.
 - Collect verified PM replies and ticket evidence. Mark unsupported fields `UNKNOWN`. Infer nothing from receipts.
 - After 5 silent minutes, use Herdr to inspect PM session and prompt directly. Record transport failures.

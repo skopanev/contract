@@ -6,7 +6,7 @@
 - Route cross-module changes through PM; finish independent work in `EQUILL_MODULE`.
 - Try to resolve local blockers autonomously. Follow retry/escalation rules.
 - Own implementation, tests, commits, rebases, authorized landing to configured target branch, and cleanup.
-- Tooling is MCP only:
+- Tooling is MCP only, except where a contract step explicitly names a CLI command:
   - memory: use Equill MCP
   - ticketing: use NTK MCP
   - messaging: use AgentBus MCP
@@ -46,26 +46,22 @@ PM sends `DONE EQUILL_TICKET`, or final stop is recorded and all work preserved;
 - Save verification evidence, SPAR findings, decisions, and artifacts in ticket. Commit the verified implementation.
 - Fetch remote and rebase onto target branch. Conflict-free rebase requires no repeated tests, SPAR, patch-id checks, or review.
 - Resolve conflicts; run minimum necessary tests and CLASS-X acceptance on resulting diff; prepare new candidate.
-- Record candidate and target-base SHAs; set `to_test`; send `READY_TO_LAND EQUILL_TICKET <commit-sha> <base-sha>` to PM; wait for `LAND`.
+- Record candidate and target-base SHAs in the ticket; set `to_test`. Land it yourself — no authorization step.
 - On `CORRECTION`, return ticket to `in_progress` and continue in the same worktree.
-- On `LAND EQUILL_TICKET <permit-id>`, read permit; verify ticket, repository, target ref, candidate/base SHAs, and that the permit is neither revoked nor already consumed.
-- Record attempt started before pushing. Never edit or rebase after authorization.
-- Never push with a missing, mismatched, already-started, or consumed permit; ask PM to resolve it.
-- Push with `git push --no-verify --force-with-lease=<target-ref>:<base-sha> <remote> <commit-sha>:<target-ref>`. Never use plain `--force`; repeated `LAND` never authorizes another push.
-- Record outcome in ticket and notify PM. Resolve unknown outcomes before another push; follow landing retry rules.
+- Never edit or rebase after the verified base is fixed. Re-verify the base instead of pushing a stale candidate.
+- Push with `git push --force-with-lease=<target-ref>:<base-sha> <remote> <commit-sha>:<target-ref>`. Never use plain `--force` and never `--no-verify`: the lease is what refuses a stale base, and the hooks are what run the tests.
+- Record the outcome in the ticket. Resolve unknown outcomes before another push; follow landing retry rules. Report to PM once, at the closing step.
 - Fetch remote; run `git merge-base --is-ancestor <commit-sha> <fetched-target-sha>`. Record whether authorized candidate entered current target history.
 - If ancestry not established, report exact result to PM. Do not guess success or retry unknown outcomes.
 - After verified landing, remove dedicated worktree and local ticket branch. Record cleanup in ticket. Never delete the shared target branch.
-- Preserve recovery coordinates; report cleanup error to PM. Cleanup failure is not a new push attempt.
-- Propose reusable findings and lessons to PM, or `NONE`. Each statement: one thought, aim 15 words, maximum 20.
-- Keep evidence separately in ticket. Send only `READY EQUILL_TICKET` to PM; remain available for communication.
+- Preserve recovery coordinates; report cleanup error to PM. Cleanup failure is not a new landing.
+- Keep evidence in the ticket. Send PM one closing report: `READY EQUILL_TICKET`, the landing status, the pointers to that evidence, and reusable findings and lessons or `NONE` — each one thought, aim 15 words, maximum 20. Remain available for communication.
 - After PM independently verifies landing and cleanup, sets ticket `done`, and sends `DONE EQUILL_TICKET`, finish your final response.
 - Before pane closure, PM verifies the saved completed turn and this session’s idle/done or absent state.
 
 ## COMMUNICATION RULES
 - Send `DECISION_REQUIRED EQUILL_TICKET <facts>` to PM; reread ticket before applying `DECISION`.
-- After 3 failed attempts, record exact error, send `BLOCKED EQUILL_TICKET <exact error>` to PM. Stop blocked work.
-- Pane replacement doesn't reset attempt counter.
+- After 3 failed landings, record the exact error and send `BLOCKED EQUILL_TICKET <exact error>` to PM. Stop blocked work.
 - AgentBus MCP: `inbox_STORED` means delivery, not acceptance.
 - Answer `STATE_REQUEST EQUILL_TICKET` with `STATE EQUILL_TICKET <state> <current-action> <next-action>`.
 - Use English. Russian allowed with Owner.
@@ -81,13 +77,11 @@ PM sends `DONE EQUILL_TICKET`, or final stop is recorded and all work preserved;
 - Return ticket to `open` (not `BLOCKED`); preserve work and SHAs; finish response; PM releases pane.
 - `BLOCKED` is only for unresolved blockers not represented by a ticket dependency (like missing access).
 - Once dependency is `done`, NTK can select the `open` ticket again.
-- Resume retained work; perform necessary integration verification before `READY_TO_LAND`.
-- Keep commands, exit codes, panel evidence, decisions, SHAs, permits, outcomes, cleanup, and knowledge proposals in ticket.
+- Resume retained work; perform necessary integration verification before landing.
+- Keep commands, exit codes, panel evidence, decisions, SHAs, outcomes, cleanup, and knowledge proposals in ticket.
 - Do not duplicate ticket bodies or evidence in AgentBus.
-- A permit authorizes one push attempt. After first or second failure, preserve same worktree, return to `in_progress`.
-- Prepare a new candidate and request a new permit.
+- A refused lease is not a failure: re-verify the base, rebase, and land again. Preserve the same worktree.
 - After third attempt, send `BLOCKED EQUILL_TICKET landing_conflict_exhausted`. Never make fourth attempt; counter survives restarts.
-- If push outcome unknown, ask PM to reconcile permit and current remote before any retry.
 - If candidate already landed, finish cleanup and acceptance without pushing again.
 - Before final stop, external blocking, or cancellation, save work in retained branch.
 - Record branch/commit SHA in ticket, then remove worktree. If save fails, keep worktree and notify PM.
