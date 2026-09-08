@@ -32,8 +32,10 @@
 - Drain max 10 messages or 30 seconds. Preserve received messages and cursor. Do not drain indefinitely.
 - Send lane directives via AgentBus to peer mapped to live pane_id. Use conv.<slug>.pane-<hex>.
 - Apply ready decisions and resolve blockers immediately.
+- Review `READY_TO_LAND` against scope, dependencies, SHAs, evidence. Send `CORRECTION` or authorize `LAND`. Do this before follow-up bookkeeping and before refill.
+- Persist and reserve the one-attempt permit for the repository and target before sending `LAND EQUILL_TICKET <permit-id>`. Never send LAND if persisting the permit failed.
 - Stop after three identical tool failures. Record exact error. Mark pane WAITING.
-- Verify same session is idle/done or absent with saved turn. Close via `herdr pane close <pane_id>`.
+- Close a finished lane through the launcher: `lane-management.sh --action close --project "$EQUILL_PROJECT" --pane <pane_id>`. Read pane_id from .runtime/lane-sessions/<TICKET>.json and verify against `herdr pane list` for the project workspace before closing. It refuses the caller's own pane, a pane outside the project workspace, and a pane whose agent is not idle or done.
 - Disposition panel findings in parent ticket. Hold follow-up creation.
 - Write `GROUNDING <repo>@<sha> <path>` for follow-ups. Route future architecture to GM before ticket creation.
 - Compute `FOLLOWUP_KEY` as SHA-256 of project|parent|grounding|scope. Search NTK status. Serialize creation.
@@ -44,14 +46,12 @@
 - Prioritize Lane decisions and eligible assignments; prepare one ticket, then repeat. Honor Owner instructions; continue assigned backlog.
 - Load Equill MCP `context(profile="agent.context.target",process="pm-triage",budget_records=100)` for preparation/reassessment if absent; retain actor, role, and project.
 - If loading fails, report the exact error; continue independent work.
-- Review `READY_TO_LAND` against scope, dependencies, SHAs, evidence. Send `CORRECTION` or authorize `LAND`.
-- Persist and reserve one-attempt permit for repository/target before sending `LAND EQUILL_TICKET <permit-id>`.
 - Coordinate other-module work through separate tickets, agreed public contract, dependencies.
 - Review `to_test` work from durable evidence. Run long gates in background. Accept or reopen.
 - Answer explicit GM requests with verified fleet, load, landings, blockers, releases, next action.
 - Start one lane via `lane-management.sh --action start --project "$EQUILL_PROJECT" --task <ticket> --module <module> --pm "$EQUILL_PM" --runner <runner>`. Continue immediately.
 - Repeat review and start while capacity available and `open` ticket exists.
-- Match pane lifecycle to NTK status: close done/open/to_review/blocked; keep in_progress/to_test.
+- Match pane lifecycle to NTK status: close done/open/to_review/blocked only through the launcher command defined in the closure step; never call herdr directly. Keep in_progress/to_test.
 - After 20 idle minutes, send `STATE_REQUEST`. If silent after 5 minutes, inspect Herdr, worktree, Git, NTK.
 - Recheck `blocked`/`to_review` after 24 hours without substantive progress; escalate unresolved ticket/question/decision to its named decision owner.
 - Ignore bot updates/reminders when timing inactivity. Repeat unchanged questions at most daily; honor explicit holds/review dates.
@@ -74,8 +74,8 @@
 - Each executable ticket belongs to one module. Assign it only to that module's Lane.
 - Connect multi-module work with explicit dependencies and one ticket per module.
 - Resume retained work in `in_progress` or `open` after blocker resolves; never directly to `to_test`.
-- Persist permit IDs, SHAs, attempts, deadlines. One active permit per repo/target. 30-second deadline.
-- Resolve previous outcome before replacement. Finish cleanup if already landed. Renew expired unused permits.
+- Persist permit IDs, SHAs and attempts. One active permit per repository and target.
+- Resolve the previous outcome before replacing a permit. Finish cleanup if the candidate already landed. Replace a permit when the candidate or the target changed, never because time passed.
 - Lane keeps session after `READY`. Close only idle/done/absent session with saved turn.
 - Executable tickets reference own project’s module. Create separate tickets with dependencies for cross-module work.
 - Append project-scoped findings via enforced grants. Proposed memory: one thought, max 20 words.

@@ -45,8 +45,8 @@
 - Record candidate and target-base SHAs; set `to_test`; send `READY_TO_LAND EQUILL_TICKET <commit-sha> <base-sha>` to PM; wait for `LAND`.
 - On `CORRECTION`, return ticket to `in_progress` and continue in the same worktree.
 - On `LAND EQUILL_TICKET <permit-id>`, read permit; verify ticket, repository, target ref, candidate/base SHAs, and validity window.
-- Record attempt started before pushing; enforce 30-second push limit. Never edit or rebase after authorization.
-- Never push with a missing, expired, mismatched, already-started, or consumed permit; ask PM to resolve it.
+- Record attempt started before pushing. Never edit or rebase after authorization.
+- Never push with a missing, mismatched, already-started, or consumed permit; ask PM to resolve it.
 - Push with `git push --no-verify --force-with-lease=<target-ref>:<base-sha> <remote> <commit-sha>:<target-ref>`. Never use plain `--force`; repeated `LAND` never authorizes another push.
 - Record outcome in ticket and notify PM. Resolve unknown outcomes before another push; follow landing retry rules.
 - Fetch remote; run `git merge-base --is-ancestor <commit-sha> <fetched-target-sha>`. Record whether authorized candidate entered current target history.
@@ -83,7 +83,6 @@
 - After third attempt, send `BLOCKED EQUILL_TICKET landing_conflict_exhausted`. Never make fourth attempt; counter survives restarts.
 - If push outcome unknown, ask PM to reconcile permit and current remote before any retry.
 - If candidate already landed, finish cleanup and acceptance without pushing again.
-- Expired unused permit needs renewal, but consumes no push attempt.
 - Before final stop, external blocking, or cancellation, save work in retained branch.
 - Record branch/commit SHA in ticket, then remove worktree. If save fails, keep worktree and notify PM.
 - Never delete unsaved work.

@@ -279,19 +279,19 @@ Launcher передаёт в `EQUILL_PM` стабильный alias `<project-id
 
 ### Одно разрешение — одна попытка push
 
-Permit хранится в ticket: `permit_id`, `repository_id`, `remote`, `target_ref`, `ticket`, `commit_sha`, `base_sha`, `attempt_number`, `start_before_epoch`, `attempt_deadline_epoch`.
+Permit хранится в ticket: `permit_id`, `repository_id`, `remote`, `target_ref`, `ticket`, `commit_sha`, `base_sha`, `attempt_number`.
 
-На пару `(repository_id, target_ref)` активен максимум один permit. PM выдаёт его после review candidate; после выдачи Lane не меняет код и не выполняет rebase/tests по этому разрешению. Окно старта — 120 секунд, deadline — ещё 30 секунд после конца окна. Повтор доставки `LAND` не разрешает второй push.
+На пару `(repository_id, target_ref)` активен максимум один permit. PM выдаёт его после review candidate; после выдачи Lane не меняет код и не выполняет rebase/tests по этому разрешению. Разрешение не истекает: оно действует до расхода попытки, явного отзыва PM или смены candidate/target. Повтор доставки `LAND` не разрешает второй push.
 
-Внутренняя операция landing проверяет permit/candidate/base и время, атомарно отмечает начало попытки и выполняет push из раздела 3 со встроенным переносимым ограничением 30 секунд. Это не новое публичное действие launcher. Затем fetch, проверка ancestry и детерминированный exit code. Любой ненулевой код или прерывание расходует permit.
+Внутренняя операция landing проверяет permit/candidate/base, атомарно отмечает начало попытки и выполняет push из раздела 3. Это не новое публичное действие launcher. Затем fetch, проверка ancestry и детерминированный exit code. Любой ненулевой код или прерывание расходует permit.
 
 ### Recovery и предел retry
 
 Сначала установить исход предыдущей попытки по ticket и актуальному remote. Если candidate уже входит в историю target, повторный push запрещён: завершить cleanup и приёмку. Ошибка cleanup не становится новой попыткой push.
 
-Если candidate не landed, до deadline нельзя выдать заменяющий permit. После deadline и подтверждения завершения предыдущей попытки разрешение закрывается. Пока исход неизвестен, push этой пары блокируется; остальные Lane и PM tick продолжают работу.
+Если candidate не landed, заменяющий permit нельзя выдать до подтверждения исхода предыдущей попытки. После подтверждения разрешение закрывается. Пока исход неизвестен, push этой пары блокируется; остальные Lane и PM tick продолжают работу.
 
-После первой/второй подтверждённой неудачи — тот же worktree, новый candidate и новое разрешение. После третьей: `BLOCKED <ticket> landing_conflict_exhausted` и сохранение работы по разделу 3. Не больше трёх push attempts на данный landing; четвёртая попытка запрещена, счётчик переживает рестарты. Истёкшее разрешение без начатого push не считается push attempt, но требует нового permit после recovery.
+После первой/второй подтверждённой неудачи — тот же worktree, новый candidate и новое разрешение. После третьей: `BLOCKED <ticket> landing_conflict_exhausted` и сохранение работы по разделу 3. Не больше трёх push attempts на данный landing; четвёртая попытка запрещена, счётчик переживает рестарты. Разрешение, отозванное без начатого push, не считается push attempt, но требует нового permit после recovery.
 
 ## Приложение B. Настройки hooks и реестра
 
