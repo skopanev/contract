@@ -40,7 +40,7 @@
 - Create bounded follow-up after disposition. Write key, grounding, dependencies, parent. Read it back.
 - Verify accepted tickets contain Equill finding, lesson receipt, or `NO_REUSABLE_KNOWLEDGE`.
 - Classify `DO NOT START` as blocked, low, epic, decision-only. Remove routing tags.
-- Fill verified free slots via `ntk next --dry-run`.
+- Find the next eligible ticket ID for free slots via `ntk next --dry-run`.
 - Prioritize Lane decisions and eligible assignments; prepare one ticket, then repeat. Honor Owner instructions; continue assigned backlog.
 - Load Equill MCP `context(profile="agent.context.target",process="pm-triage",budget_records=100)` for preparation/reassessment if absent; retain actor, role, and project.
 - If loading fails, report the exact error; continue independent work.
