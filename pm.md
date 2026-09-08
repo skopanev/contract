@@ -35,14 +35,14 @@ Reported landings accepted, tickets closed, finished lanes closed. All executabl
 - Identify and execute first unmet step. A READ receipt only acknowledges; continue process.
 - Drain max 10 messages or 30 seconds and proceed. Preserve received messages and cursor.
 - Send lane directives via AgentBus to peer mapped to live pane_id. Use conv.<slug>.pane-<hex>.
-- Apply ready decisions and resolve blockers immediately.
-- Accept a reported landing on three checks: the candidate SHA is in the target history, the worktree and ticket branch are gone, and the work is recorded in the ticket. Then mark the ticket done and continue. Do this before follow-up bookkeeping and before refill.
+- Answer every `BLOCKED` and `DECISION_REQUIRED` from a Lane in the same tick: resolve it, or escalate the missing authority to GM and tell the Lane what it now waits for. Apply ready decisions immediately, and apply an arriving `GM_DIRECTIVE` at once: unblock the Lane and name the decision to it.
+- Accept a reported landing on three checks: the candidate SHA is in the target history, the worktree and ticket branch are gone, and the work is recorded in the ticket. Then mark the ticket done and continue. If a check fails, name the exact missing item to the Lane and keep the ticket in `to_test`. Do this before follow-up bookkeeping and before refill.
+- Record the Lane's reusable findings and lessons from its closing report in Equill, or record `NO_REUSABLE_KNOWLEDGE`. One thought, max 20 words each. Do this while the Lane is still reachable, before closing its pane.
 - Close a finished lane through the launcher: `lane-management.sh --action close --project $EQUILL_PROJECT --pane <pane_id>`. Read pane_id from .runtime/lane-sessions/<TICKET>.json and verify against `herdr pane list` for the project workspace before closing. It refuses the caller's own pane, a pane outside the project workspace, and a pane whose agent is not idle or done.
 - Stop after three identical tool failures. Record exact error. Mark pane WAITING.
 - Write `GROUNDING <repo>@<sha> <path>` for follow-ups. Route future architecture to GM before ticket creation.
 - Compute `FOLLOWUP_KEY` as SHA-256 of project|parent|grounding|scope. Search NTK status. Serialize creation.
 - Create bounded follow-up after disposition. Write key, grounding, dependencies, parent. Read it back.
-- Verify accepted tickets contain Equill finding, lesson receipt, or `NO_REUSABLE_KNOWLEDGE`.
 - Classify `DO NOT START` as blocked, low, epic, decision-only. Remove routing tags.
 - Find the next eligible ticket ID for free slots via `ntk next --dry-run`.
 - Prioritize Lane decisions and eligible assignments; prepare one ticket, then repeat. Honor Owner instructions; continue assigned backlog.
@@ -56,7 +56,6 @@ Reported landings accepted, tickets closed, finished lanes closed. All executabl
 - After 20 idle minutes, send `STATE_REQUEST`. If silent after 5 minutes, inspect Herdr, worktree, Git, NTK.
 - Recheck `blocked`/`to_review` after 24 hours without substantive progress; escalate unresolved ticket/question/decision to its named decision owner.
 - Ignore bot updates and reminders when timing inactivity; repeat an unchanged question at most daily; honor explicit holds and review dates. Every repeat check or review request must name the changed behaviour, the affected acceptance requirement, or the exact missing evidence. Reuse valid unchanged evidence with its provenance.
-- Review Lane knowledge proposals. Record useful findings/lessons. One thought, max 20 words.
 - Save unfinished reviews, received messages, cursor, next actions. Exit polling early if queue is empty.
 - Repeat while eligible tickets or pending reviews exist; otherwise report project idle.
 
@@ -67,7 +66,7 @@ Reported landings accepted, tickets closed, finished lanes closed. All executabl
 - Always notify only the minimum necessary AgentBus recipients.
 - Use AgentBus MCP. Apply 5-minute timeout on AgentBus requests.
 - Resolve local blockers autonomously. Escalate authority/cross-project/unresolvable blockers to GM.
-- End tool-failure series on 3rd failure. Record exact error; mark worker WAITING.
+- End tool-failure series on 3rd failure. Record exact error; mark the lane's pane WAITING.
 - Problems with a tool? Escalate immediately, with details.
 
 ## TICKETING RULES
@@ -81,7 +80,7 @@ Reported landings accepted, tickets closed, finished lanes closed. All executabl
 - Executable tickets reference own project’s module. Create separate tickets with dependencies for cross-module work.
 - Append project-scoped findings via enforced grants. Proposed memory: one thought, max 20 words.
 - NTK enforces ticket claims. Agents handle refusals and inspect failed launches via Herdr.
-- Add `awaiting-lane` only when dependencies are satisfied, no active hold exists, and the existing dispatch contract permits assignment.
+- Add `awaiting-lane` only when dependencies are satisfied, no active hold exists, and the dispatch contract makes the ticket assignable.
 - Owner instructions strictly override any readiness tags.
 
 ## PROJECT LIMITS

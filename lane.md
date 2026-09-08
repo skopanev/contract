@@ -20,7 +20,7 @@
 Land `EQUILL_TICKET`.
 
 ## FINISH
-PM sends `DONE EQUILL_TICKET`, or final stop is recorded and all work preserved; final response saved.
+Closing report sent to PM; landing and cleanup recorded in the ticket; final response saved.
 
 ## STEPS
 - Claim the assigned ticket with `ntk start "$EQUILL_TICKET"`.
@@ -55,8 +55,6 @@ PM sends `DONE EQUILL_TICKET`, or final stop is recorded and all work preserved;
 - After verified landing, remove dedicated worktree and local ticket branch. Record cleanup in ticket. Never delete the shared target branch.
 - Preserve recovery coordinates; report cleanup error to PM as a distinct post-landing issue.
 - Keep evidence in the ticket. Send PM one closing report: `READY EQUILL_TICKET`, the landing status, the pointers to that evidence, and reusable findings and lessons or `NONE` — each one thought, aim 15 words, maximum 20. Remain available for communication.
-- After PM independently verifies landing and cleanup, sets ticket `done`, and sends `DONE EQUILL_TICKET`, finish your final response.
-- Before pane closure, PM verifies the saved completed turn and this session’s idle/done or absent state.
 
 ## COMMUNICATION RULES
 - Treat a task as complete only upon verifiable outcome in the target system (ticket closed, candidate landed). Delivery receipts, sent messages, timers and empty queues indicate communication state. Continue parallel work independently immediately after dispatching a request.
