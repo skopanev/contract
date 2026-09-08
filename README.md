@@ -293,7 +293,7 @@ Hooks подключаются локально к конкретным Lane/PM 
 
 Для Lane: `EQUILL_ACTOR=lane`, `EQUILL_ROLE=lane`, `EQUILL_PROCESS=lane-unit`, `EQUILL_RULES=comm,tickets`, `EQUILL_PROFILE=lane`. Lane не наследует role/process/rules родительского PM/GM. Для PM: `EQUILL_ACTOR=<project>-pm`, `EQUILL_ROLE=pm`; для GM actor/role — `gm`. Process IDs PM/GM — из раздела 1. Codex Lane/PM panes используют отдельный pane-local `CODEX_HOME` внутри `<project>/.runtime`; глобальные hooks памяти не используются.
 
-SessionStart получает полный LLM-formatted contract без лимита токенов. Ошибка или пустой ответ Equill прерывает старт; timeout — 600 секунд. UserPromptSubmit передаёт `--budget-records 30` без токенового лимита; timeout — 45 секунд. Equill сначала заполняет budget подходящими vector results, затем уникальным FTS backfill; фиксированного соотношения нет. Сбой даёт warning и продолжает prompt без delta. Отбор, лимит записей и форматирование выполняет Equill; hook не режет ответ.
+SessionStart получает до 100 записей LLM-formatted contract без лимита токенов. Ошибка или пустой ответ Equill прерывает старт; timeout — 600 секунд. UserPromptSubmit передаёт `--budget-records 30` без токенового лимита; timeout — 45 секунд. Equill сначала заполняет budget подходящими vector results, затем уникальным FTS backfill; фиксированного соотношения нет. Сбой даёт warning и продолжает prompt без delta. Отбор, лимит записей и форматирование выполняет Equill; hook не режет ответ.
 
 Embedding обслуживается одним shared Ollama daemon, не отдельным процессом с моделью для каждой Lane. Целевая конфигурация: Qwen3-Embedding-8B Q8, Metal, 4096 dimensions, keep-alive 30 минут.
 
