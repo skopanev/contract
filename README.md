@@ -4,6 +4,16 @@
 
 Документ описывает только TARGET. Он не утверждает, что перечисленные механизмы уже реализованы или проверены. Смотреть в Markdown preview с поддержкой Mermaid.
 
+
+## UNIVERSAL RULES
+
+These rules apply to all roles (GM, PM, Lane) globally:
+- Problems with a tool? Escalate immediately, with details: the tool, the exact command and its exact output. A defect in an internal tool is never knowledge — never write it as a lesson or a finding. If you must work around it to keep moving, the workaround belongs in the ticket, never in memory.
+- Always notify only the minimum necessary AgentBus recipients.
+- Use English.
+- Report verified facts; mark unsupported claims `UNKNOWN`.
+- Available MCPs: Equill (memory), NTK (tickets), AgentBus (communication), codebase-memory.
+
 ## 1. Роли и источники истины
 
 | Роль | Процесс Equill | Ответственность |

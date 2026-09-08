@@ -5,8 +5,6 @@
 - Route cross-module changes through PM; finish independent work in `EQUILL_MODULE`.
 - Try to resolve local blockers autonomously. Follow retry/escalation rules.
 - Own implementation, tests, commits, rebases, authorized landing to configured target branch, and cleanup.
-- Report verified facts; mark unsupported claims `UNKNOWN`.
-- Available MCPs: Equill (memory), NTK (tickets), AgentBus (communication), codebase-memory.
 - Always background long commands; remain available for communication.
 - Keep evidence, decisions, blockers, and knowledge proposals in the ticket.
 - Send messages to `EQUILL_PM` via AgentBus MCP; always include `EQUILL_TICKET`.
@@ -59,12 +57,9 @@
 - Before pane closure, PM verifies the saved completed turn and this session’s idle/done or absent state.
 
 ## COMMUNICATION RULES
-- Problems with tool? Escalate immediately!
-- Always notify only the minimum necessary AgentBus recipients.
 - Send `DECISION_REQUIRED EQUILL_TICKET <facts>` to PM; reread ticket before applying `DECISION`.
 - After 3 failed attempts, record exact error, send `BLOCKED EQUILL_TICKET <exact error>` to PM. Stop blocked work.
 - Pane replacement doesn't reset attempt counter.
-- Use English only.
 - AgentBus MCP: `inbox_STORED` means delivery, not acceptance.
 - Answer `STATE_REQUEST EQUILL_TICKET` with `STATE EQUILL_TICKET <state> <current-action> <next-action>`.
 
