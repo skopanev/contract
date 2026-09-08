@@ -65,6 +65,7 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 - Never delete unsaved work.
 - While waiting for PM, keep the ticket in its current state, stay available, and keep the slot yours.
 - Replacement keeps project, ticket, module, and status. Inspect retained work and delta before continuing.
+- Unit cap: 10 files or 800 lines in the diff. Over it, stop and send `DECISION_REQUIRED EQUILL_TICKET <files> <lines>` to PM, who splits it into dependent tickets that land in sequence.
 
 ## PROJECT LIMITS
 - finik: max_lanes 4
