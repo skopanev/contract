@@ -56,6 +56,7 @@
 - Repeat while eligible tickets or pending reviews exist; otherwise report project idle.
 
 ## PM RULES
+- Always notify only the minimum necessary AgentBus recipients.
 - Assign one `open`, `agent-ready` ticket with one active module per Lane.
 - Use English. Use AgentBus MCP. Apply 5-minute timeout on AgentBus requests.
 - Resolve local blockers autonomously. Escalate authority/cross-project/unresolvable blockers to GM.

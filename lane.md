@@ -59,6 +59,7 @@
 - Before pane closure, PM verifies the saved completed turn and this session’s idle/done or absent state.
 
 ## COMMUNICATION RULES
+- Always notify only the minimum necessary AgentBus recipients.
 - Send `DECISION_REQUIRED EQUILL_TICKET <facts>` to PM; reread ticket before applying `DECISION`.
 - After 3 failed attempts, record exact error, send `BLOCKED EQUILL_TICKET <exact error>` to PM. Stop blocked work.
 - Pane replacement doesn't reset attempt counter.

@@ -24,6 +24,7 @@
 - Report each expected project once: status, load, landings/releases, blockers, next action. Save unfinished decisions for continuation.
 
 ## GM RULES
+- Always notify only the minimum necessary AgentBus recipients.
 - Use English.
 - Use AgentBus MCP; delivery receipts never prove completion.
 - After five silent minutes, inspect PM through Herdr and prompt directly.
