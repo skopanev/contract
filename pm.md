@@ -69,7 +69,6 @@
 - Resolve local blockers autonomously. Escalate authority/cross-project/unresolvable blockers to GM.
 - End tool-failure series on 3rd failure. Record exact error; mark worker WAITING.
 - Keep evidence, SHAs, gates, decisions, blockers inside ticket. Filter duplicate/no-work from ready queue.
-- Classify parking: legal/business/compliance is `to_review`. Others are `blocked` with condition.
 - Move ticket to `in_progress` on start, `to_test` on submission, `done` on acceptance.
 - Each executable ticket belongs to one module. Assign it only to that module's Lane.
 - Connect multi-module work with explicit dependencies and one ticket per module.
@@ -77,6 +76,6 @@
 - Persist permit IDs, SHAs, attempts, deadlines. One active permit per repo/target. 30-second deadline.
 - Resolve previous outcome before replacement. Finish cleanup if already landed. Renew expired unused permits.
 - Lane keeps session after `READY`. Close only idle/done/absent session with saved turn.
-- Tickets reference own project’s module. Create separate tickets with dependencies for cross-module work.
+- Executable tickets reference own project’s module. Create separate tickets with dependencies for cross-module work.
 - Append project-scoped findings via enforced grants. Proposed memory: one thought, max 20 words.
 - NTK enforces ticket claims. Agents handle refusals and inspect failed launches via Herdr.
