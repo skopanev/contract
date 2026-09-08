@@ -12,7 +12,10 @@ These rules apply to all roles (GM, PM, Lane) globally:
 - Always notify only the minimum necessary AgentBus recipients.
 - Use English. With Owner you can use Russian.
 - Report verified facts; mark unsupported claims `UNKNOWN`.
-- Available MCPs: Equill (memory), NTK (tickets), AgentBus (communication), codebase-memory.
+- memory: use Equill MCP
+- ticketing: use NTK MCP
+- messaging: use AgentBus MCP
+- codebase: use codebase-memory MCP
 
 ## 1. Роли и источники истины
 
