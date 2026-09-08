@@ -43,7 +43,7 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 - If ancestry not established, report exact result to PM. Do not guess success or retry unknown outcomes.
 - After verified landing, remove dedicated worktree and local ticket branch. Record cleanup in ticket. Never delete the shared target branch.
 - Preserve recovery coordinates; report cleanup error to PM as a distinct post-landing issue.
-- Keep evidence in the ticket. Send PM one closing report: `READY EQUILL_TICKET`, the landing status, the pointers to that evidence, and reusable findings and lessons or `NONE` — each one thought, aim 15 words, maximum 20. Remain available for communication.
+- Keep evidence in the ticket. Send PM one closing report: `READY EQUILL_TICKET`, the landing status and the pointers to that evidence. Remain available for communication.
 
 ## COMMUNICATION RULES
 - Treat a task as complete only upon verifiable outcome in the target system (ticket closed, candidate landed). Delivery receipts, sent messages, timers and empty queues indicate communication state. Continue parallel work independently immediately after dispatching a request.
