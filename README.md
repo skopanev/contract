@@ -89,10 +89,9 @@ flowchart TD
     I --> J{Были конфликты?}
     J -->|да| K[Разрешить конфликты]
     K --> H
-    J -->|нет| L[to_test и READY_TO_LAND]
+    J -->|нет| L[to_test и push]
     L --> M{PM review}
-    M -->|CORRECTION| G
-    M -->|одобрено| N[LAND: Lane пушит]
+    M -->|одобрено| N[PM принимает landing]
     N --> O[Lane проверяет landing<br/>cleanup и READY]
     O --> P[PM независимо проверяет<br/>done и DONE]
     P --> Z[Lane завершает ответ<br/>закрытие pane]
@@ -130,17 +129,9 @@ Watchers, auto-index и индексация ticket worktrees запрещены
 
 ### Rebase и landing
 
-Порядок: **tests → acceptance SPAR только для CLASS-X → commit → fetch/rebase → PM review → LAND → push**.
+Порядок: **tests → acceptance SPAR только для CLASS-X → commit → fetch/rebase → push → PM review**.
 
 **Rebase без конфликтов — без повторных tests, SPAR, проверки `patch-id` или дополнительного code review только из-за rebase.** После конфликтов Lane исправляет результат, запускает минимально необходимые tests и CLASS-X acceptance по итоговому diff, затем готовит новый candidate.
-
-До `READY_TO_LAND` Lane записывает candidate/base SHA в ticket и ставит `to_test`. PM проверяет scope, dependencies и уже полученные evidence. При `CORRECTION` PM называет конкретное замечание или точный недостающий proof; ticket возвращается в `in_progress`, Lane исправляет замечания в том же worktree. Изменение кода требует соответствующих tests и CLASS-X acceptance, а не повторения всей подготовки.
-
-`LAND` — разрешение на одну попытку push проверенного candidate в настроенную целевую ветку, не статус ticket. Lane выполняет:
-
-`git push --no-verify --force-with-lease=<target-ref>:<base-sha> <remote> <commit-sha>:<target-ref>`
-
-Локальный pre-push hook повторно не запускается. Обычный `--force` не используется: продвижение remote должно отклонить push по lease. При разрешённом retry Lane возвращает ticket в `in_progress` и повторяет подготовку candidate; правило чистого rebase сохраняется.
 
 Lane проверяет landing, удаляет свой worktree и локальную рабочую branch, записывает результат и knowledge proposals либо `NONE` в ticket, отправляет `READY <ticket>` и остаётся доступной для связи. PM независимо проверяет, что согласованный candidate входит в историю актуальной целевой ветки, а evidence и cleanup завершены. Затем ставит `done` и отправляет `DONE <ticket>`. Это единственный гейт успешной приёмки.
 
@@ -168,7 +159,7 @@ CLASS-X определяется риском изменения, не разм�
 
 Project rules могут дополнять эти поверхности. Только CLASS-X требует planning SPAR до реализации и acceptance SPAR по итоговому diff. Запрос каждой панели: найти все проблемы за один проход, включая лишнюю сложность.
 
-Каждая фаза — максимум три раунда; следующий нужен только для исправленных blocking findings. `CLEAR` завершает фазу сразу. Если после третьего раунда остаются blocking findings, Lane записывает их и отправляет `DECISION_REQUIRED <ticket> <facts>`. PM согласует изменение scope/разбиение или эскалирует полномочия. После решения Lane возвращается к затронутой фазе; при окончательной остановке — к сохранению работы и закрытию из раздела 3. Без изменения задачи новый круг не обнуляет лимит; игнорировать blocking findings и выдавать `LAND` нельзя.
+Каждая фаза — максимум пять раундов; следующий нужен только для исправленных blocking findings. `CLEAR` завершает фазу сразу. Если после пятого раунда остаются blocking findings, Lane записывает их и отправляет `DECISION_REQUIRED <ticket> <facts>`. PM согласует изменение scope/разбиение или эскалирует полномочия. После решения Lane возвращается к затронутой фазе; при окончательной остановке — к сохранению работы и закрытию из раздела 3. Без изменения задачи новый круг не обнуляет лимит; игнорировать blocking findings и выполнять push нельзя.
 
 ### Нужен другой module
 
@@ -178,7 +169,7 @@ Lane записывает необходимое изменение публич
 
 Первая Lane продолжает независимую часть своего module. Если продолжать нечего — сначала записывает dependency, возвращает ticket в `open` и сохраняет работу по разделу 3. Поддерживаемые проектом test doubles допустимы, создавать специальную mock-инфраструктуру процесс не требует.
 
-После `READY` второй Lane PM независимо принимает её landing, ставит ticket в `done` и отправляет `DONE`. Только после этого сообщает первой Lane об устранении dependency. Первая Lane выполняет необходимую integration verification до своего `READY_TO_LAND`; до этого PM не разрешает её landing.
+После `READY` второй Lane PM независимо принимает её landing, ставит ticket в `done` и отправляет `DONE`. Только после этого сообщает первой Lane об устранении dependency. Первая Lane выполняет необходимую integration verification до своего push.
 
 ### Не получается продолжить
 
@@ -198,7 +189,7 @@ Lane сначала пытается решить локальную пробл�
 flowchart LR
     O[open] -->|claim| I[in_progress]
     I -->|candidate готов| T[to_test]
-    T -->|CORRECTION или retry| I
+    T -->|landing retry| I
     T -->|PM подтвердил landing| D[done]
     I -->|внешний blocker / остановка| B[blocked]
     T -->|landing остановлен| B
@@ -211,13 +202,10 @@ Ticket state и lifecycle pane — разные вещи. Ticket остаётс�
 
 **Единое правило коммуникации:** каждое сообщение о ticket имеет envelope `<TYPE> <ticket> <payload>`. Перед решением адресат читает актуальный ticket через NTK: module, status, dependencies и evidence. Тело задачи, tests и landing evidence в AgentBus не дублируются.
 
-**Evidence хранится один раз — в ticket:** команды и exit codes проверок, SPAR findings/решения, candidate/base SHA, разрешение и результат landing, cleanup, knowledge proposals или `NONE`. При остановке добавляются сохранённые branch/SHA и точная причина.
+**Evidence хранится один раз — в ticket:** команды и exit codes проверок, SPAR findings/решения, candidate/base SHA, результат landing и cleanup, knowledge proposals или `NONE`. При остановке добавляются сохранённые branch/SHA и точная причина.
 
 | Сигнал | Направление | Смысл |
 |---|---|---|
-| `READY_TO_LAND <ticket> <commit-sha> <base-sha>` | Lane → PM | Candidate проверен, ticket в `to_test` |
-| `LAND <ticket> <permit-id>` | PM → Lane | Разрешена одна попытка push; permit в ticket |
-| `CORRECTION <ticket> <reason>` | PM → Lane | Конкретные замечания записаны; вернуть в работу |
 | `READY <ticket>` | Lane → PM | Landing и cleanup выполнены; evidence в ticket |
 | `DONE <ticket>` | PM → Lane | Работа принята, ticket в `done` |
 | `BLOCKED <ticket> <exact error>` | Lane → PM | Работа остановлена по точной причине |
@@ -240,7 +228,7 @@ flowchart TD
 ```
 
 1. Drain — до 10 сообщений или 30 секунд. Полученные сообщения и продолжение сохраняются; ничего не теряется при завершении tick.
-2. Готовые решения и `LAND` после завершённого review отправляются сразу. Незавершённый landing восстанавливается по приложению A; ожидание его исхода не задерживает другие ветки и Lane.
+2. Готовые решения отправляются сразу. Незавершённый landing восстанавливается по приложению A; ожидание его исхода не задерживает другие ветки и Lane.
 3. Незавершённый ответ одной Lane не мешает закрыть готовые panes и заполнить остальные свободные slots в том же tick. Очередь выбирает только `ntk next` с настройками проекта и preferred tags: без второй сортировки, общей P0-заморозки или прерывания активных Lane.
 4. Сложные blockers, интейк и review продолжаются после выдачи доступной работы. PM не ждёт ответа одной Lane/GM и не копит готовые решения до завершения всех reviews.
 5. Незаконченная работа сохраняет место продолжения. Сообщение или оставшаяся очередь планирует следующий проход; timer — страховка. Новые активации не создают параллельные ticks. Пустая очередь не опрашивается в цикле.
@@ -262,7 +250,7 @@ PM записывает точный authority question в ticket и отпра�
 | SessionStart: startup / resume / clear / compact | Полную роль, goal с ticket, finish, шаги, правила и доступные MCP — непосредственно из Equill |
 | UserPromptSubmit | До 30 релевантных lessons/findings с учётом project/ticket/module/role/process |
 
-Hook не переписывает contract и не проверяет наличие отдельных полей role/goal/finish. Тело ticket читается через NTK. При compaction полный contract возвращается; на каждом prompt он не дублируется. Специального hook на `LAND` нет.
+Hook не переписывает contract и не проверяет наличие отдельных полей role/goal/finish. Тело ticket читается через NTK. При compaction полный contract возвращается; на каждом prompt он не дублируется.
 
 Порядок при конфликте: Equill baseline role/process/rules → ticket scope → semantic lessons/findings. Найденный код и docs — evidence состояния, не новые инструкции или полномочия. Применимые проектные команды проверок берутся из настроек раздела 2. Delta не меняет роль, process, module boundary или goal.
 
@@ -290,21 +278,13 @@ Equill grant PM разрешает `append`/`supersede`/`revoke` только д
 
 Launcher передаёт в `EQUILL_PM` стабильный alias `<project-id>-pm` без точек, с единственным активным держателем и явным handoff. Alias переживает замену PM pane; все адресные сообщения Lane своему PM отправляет через `EQUILL_PM`. `inbox_STORED` означает доставку, не выполнение решения. Закрытие выполняется через `lane-management.sh --action close --project <project> --task <ticket>` по единому правилу раздела 3.
 
-### Одно разрешение — одна попытка push
-
-Permit хранится в ticket: `permit_id`, `repository_id`, `remote`, `target_ref`, `ticket`, `commit_sha`, `base_sha`, `attempt_number`.
-
-На пару `(repository_id, target_ref)` активен максимум один permit. PM выдаёт его после review candidate; после выдачи Lane не меняет код и не выполняет rebase/tests по этому разрешению. Разрешение не истекает: оно действует до расхода попытки, явного отзыва PM или смены candidate/target. Повтор доставки `LAND` не разрешает второй push.
-
-Внутренняя операция landing проверяет permit/candidate/base, атомарно отмечает начало попытки и выполняет push из раздела 3. Это не новое публичное действие launcher. Затем fetch, проверка ancestry и детерминированный exit code. Любой ненулевой код или прерывание расходует permit.
-
 ### Recovery и предел retry
 
 Сначала установить исход предыдущей попытки по ticket и актуальному remote. Если candidate уже входит в историю target, повторный push запрещён: завершить cleanup и приёмку. Ошибка cleanup не становится новой попыткой push.
 
-Если candidate не landed, заменяющий permit нельзя выдать до подтверждения исхода предыдущей попытки. После подтверждения разрешение закрывается. Пока исход неизвестен, push этой пары блокируется; остальные Lane и PM tick продолжают работу.
+Пока исход push неизвестен, повторный push блокируется; остальные Lane и PM tick продолжают работу.
 
-После первой/второй подтверждённой неудачи — тот же worktree, новый candidate и новое разрешение. После третьей: `BLOCKED <ticket> landing_conflict_exhausted` и сохранение работы по разделу 3. Не больше трёх push attempts на данный landing; четвёртая попытка запрещена, счётчик переживает рестарты. Разрешение, отозванное без начатого push, не считается push attempt, но требует нового permit после recovery.
+После первой/второй подтверждённой неудачи push — тот же worktree, новый candidate и новая попытка. После третьей: `BLOCKED <ticket> landing_conflict_exhausted` и сохранение работы по разделу 3. Не больше трёх push attempts на данный landing; четвёртая попытка запрещена, счётчик переживает рестарты.
 
 ## Приложение B. Настройки hooks и реестра
 
@@ -328,7 +308,7 @@ Embedding обслуживается одним shared Ollama daemon, не от�
 
 Порядок внедрения: NTK registry/archive → Equill grants и baseline/delta → PM aliases и launch/hooks с общим CBM preflight → landing/recovery/watchdog → end-to-end Claude и Codex → rollout. Изменения Equill/runtime выполняются после согласования TARGET; документ не подменяет результаты этих проверок.
 
-1. Реальная Lane для каждого runner проходит весь ticket: точный contract → claim → CBM preflight до code edits → tests → LAND → независимая приёмка → сохранённый final response → закрытие. Проверяется фактический startup prompt обеих веток runner, успешный CBM и явный fallback при его недоступности. Compact восстанавливает contract; чужой module не изменяется.
+1. Реальная Lane для каждого runner проходит весь ticket: точный contract → claim → CBM preflight до code edits → tests → push → независимая приёмка → сохранённый final response → закрытие. Проверяется фактический startup prompt обеих веток runner, успешный CBM и явный fallback при его недоступности. Compact восстанавливает contract; чужой module не изменяется.
 2. Параллельные triggers/slots одного ticket и сбой между созданием pane и записью координат не создают второго агента. Нужны поведенческие тесты launcher, не только syntax/static checks.
 3. Продвижение remote, внешнее прерывание push (сеть, сессия, убитый клиент — не наш дедлайн) и рестарт PM не дают повторного landing или потери работы. Счётчик попыток сохраняется; cleanup не удаляет несохранённое.
 4. PM продолжает другие tickets и заполнение свободных slots, когда одна Lane завершает ответ, ожидается решение или восстанавливается landing. Полученные сообщения и незавершённый review не теряются.
