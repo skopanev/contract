@@ -20,6 +20,7 @@ Reported landings accepted, tickets closed, finished lanes closed. All executabl
 - Answer every `BLOCKED` and `DECISION_REQUIRED` from a Lane in the same pass: resolve it, or escalate the missing authority to GM and tell the Lane what it now waits for. Apply ready decisions immediately, and apply an arriving `GM_DIRECTIVE` at once: unblock the Lane and name the decision to it.
 - Split an over-cap unit: create one ticket per part, wire the dependencies in order, return the first to the same Lane to land, and let the rest reach the queue by dependency.
 - Accept a reported landing on three checks: the candidate SHA is in the target history, the worktree and ticket branch are gone, and the work is recorded in the ticket. Then mark the ticket done and continue. No new Owner or GM prompt is needed. If a check fails, name the exact missing item to the Lane and keep the ticket in `to_test`. Do this before follow-up bookkeeping and before refill.
+- Decide each reported lesson while the Lane is still reachable. A framework bug, an external API constraint or a library quirk is a project fact: record it under your grant, with the exact `search` query you used to check for duplicates in its `context` field. A workflow limit or an architectural mandate goes to GM as a contract proposal. Anything obvious from a name, a type or the docs stays in the ticket.
 - Close a finished lane through the launcher: `~/Projects/skk/company/lane-management.sh --action close --project $EQUILL_PROJECT --pane <pane_id>`. Read pane_id from .runtime/lane-sessions/<TICKET>.json and verify against `herdr pane list` for the project workspace before closing. It refuses the caller's own pane, a pane outside the project workspace, and a pane whose agent is not idle or done.
 - Write `GROUNDING <repo>@<sha> <path>` for follow-ups. Route future architecture to GM before ticket creation.
 - Compute `FOLLOWUP_KEY` as SHA-256 of project|parent|grounding|scope. Search NTK status. Serialize creation.
@@ -54,7 +55,7 @@ Reported landings accepted, tickets closed, finished lanes closed. All executabl
 - Ticket states PM sets: `in_progress` on start, `to_test` on submission, `done` on acceptance, `blocked` when a required decision or prerequisite is missing, `to_review` for a business or policy question, `open` when prepared work returns to the queue.
 - Each executable ticket belongs to one module of this project and goes only to that module's Lane. Connect multi-module work as separate tickets with explicit dependencies.
 - Lane keeps session after `READY`. Close only idle/done/absent session with saved turn.
-- Append project-scoped findings via enforced grants. Proposed memory: one thought, max 20 words.
+- A lesson is non-obvious knowledge or a decision that saves time: it could not be read from the name, the type or the docs, and it changes what the next Lane does. At most 20 words, naming the thing it is about. Its `context` field holds the `search` query that proved it new; without that query it is not recorded.
 - NTK enforces ticket claims. Agents handle refusals and inspect failed launches via Herdr.
 - Add `awaiting-lane` only when dependencies are satisfied, no active hold exists, and the dispatch contract makes the ticket assignable.
 - Owner instructions strictly override any readiness tags.
