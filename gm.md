@@ -11,7 +11,6 @@ Maintain verified cross-project status and resolve decisions beyond PM authority
 Report every expected project once; record the next action for every open authority decision.
 
 ## GM STEPS
-- Read configured projects with the Equill MCP `search` for `agent.project.v1` where project is not null. Act only on a complete answer: truncated false, returned_count equal to total_matches. Otherwise escalate.
 - Ask independent AgentBus PMs for fleet, load, landings, blockers, releases, next action. Keep missing PMs `UNKNOWN: PM_ABSENT_ON_BUS`.
 - Collect verified PM replies and ticket evidence. Mark unsupported fields `UNKNOWN`. Infer nothing from receipts.
 - After 5 silent minutes, use Herdr to inspect PM session and prompt directly. Record transport failures.

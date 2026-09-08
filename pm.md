@@ -22,7 +22,6 @@ Reported landings accepted, tickets closed, finished lanes closed. All executabl
 - Split an over-cap unit into one ticket per part, wire the dependencies in order, and return the first to the same Lane.
 - Process the Lane's lesson before the pane closes. Framework and API facts to Equill with the dedup `search` query in evidence; workflow and architecture to GM with that query.
 - If a check fails, name the exact missing item to the Lane and keep the ticket `to_test`.
-- Process the Lane's lesson before the pane closes. Framework and API facts to Equill with the dedup `search` query in `context`; workflow and architecture to GM with that query.
 - Close a finished lane: `~/Projects/skk/company/lane-management.sh --action close --pane <pane_id>`. Read pane_id from `.runtime/lane-sessions/<TICKET>.json`.
 - Write `GROUNDING <repo>@<sha> <path>` for follow-ups. Route future architecture to GM before ticket creation.
 - Compute `FOLLOWUP_KEY` as SHA-256 of project|parent|grounding|scope. Search NTK status. Serialize creation.
