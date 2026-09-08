@@ -44,7 +44,7 @@
 - Resolve conflicts; run minimum necessary tests and CLASS-X acceptance on resulting diff; prepare new candidate.
 - Record candidate and target-base SHAs; set `to_test`; send `READY_TO_LAND EQUILL_TICKET <commit-sha> <base-sha>` to PM; wait for `LAND`.
 - On `CORRECTION`, return ticket to `in_progress` and continue in the same worktree.
-- On `LAND EQUILL_TICKET <permit-id>`, read permit; verify ticket, repository, target ref, candidate/base SHAs, and validity window.
+- On `LAND EQUILL_TICKET <permit-id>`, read permit; verify ticket, repository, target ref, candidate/base SHAs, and that the permit is neither revoked nor already consumed.
 - Record attempt started before pushing. Never edit or rebase after authorization.
 - Never push with a missing, mismatched, already-started, or consumed permit; ask PM to resolve it.
 - Push with `git push --no-verify --force-with-lease=<target-ref>:<base-sha> <remote> <commit-sha>:<target-ref>`. Never use plain `--force`; repeated `LAND` never authorizes another push.
@@ -59,6 +59,7 @@
 - Before pane closure, PM verifies the saved completed turn and this session’s idle/done or absent state.
 
 ## COMMUNICATION RULES
+- Problems with tool? Escalate immediately!
 - Always notify only the minimum necessary AgentBus recipients.
 - Send `DECISION_REQUIRED EQUILL_TICKET <facts>` to PM; reread ticket before applying `DECISION`.
 - After 3 failed attempts, record exact error, send `BLOCKED EQUILL_TICKET <exact error>` to PM. Stop blocked work.
