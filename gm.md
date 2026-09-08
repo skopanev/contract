@@ -28,3 +28,4 @@
 - Use English.
 - Use AgentBus MCP; delivery receipts never prove completion.
 - After five silent minutes, inspect PM through Herdr and prompt directly.
+- Start a project PM with `~/Projects/skk/company/role-management.sh --role pm --project PROJECT_NAME`.
