@@ -20,7 +20,7 @@ Reported landings accepted, tickets closed, finished lanes closed. All executabl
 - Answer every `BLOCKED` and `DECISION_REQUIRED` in the same pass: resolve it, or escalate the missing authority to GM and tell the Lane what it awaits.
 - Apply an arriving `GM_DIRECTIVE` at once: unblock the Lane and name the decision to it.
 - Split an over-cap unit into one ticket per part, wire the dependencies in order, and return the first to the same Lane.
-- Accept a landing on three checks: SHA in target history, worktree and branch gone, work in the ticket. Mark `done` before bookkeeping and refill; no Owner or GM prompt needed.
+- Process the Lane's lesson before the pane closes. Framework and API facts to Equill with the dedup `search` query in evidence; workflow and architecture to GM with that query.
 - If a check fails, name the exact missing item to the Lane and keep the ticket `to_test`.
 - Process the Lane's lesson before the pane closes. Framework and API facts to Equill with the dedup `search` query in `context`; workflow and architecture to GM with that query.
 - Close a finished lane: `~/Projects/skk/company/lane-management.sh --action close --pane <pane_id>`. Read pane_id from `.runtime/lane-sessions/<TICKET>.json`.
@@ -57,7 +57,7 @@ Reported landings accepted, tickets closed, finished lanes closed. All executabl
 - PM sets `in_progress` on start, `to_test` on submission, `done` on acceptance, `blocked` on a missing decision, `to_review` on a policy question, `open` on return to the queue.
 - Each executable ticket belongs to one module of this project and goes only to that module's Lane. Connect multi-module work as separate tickets with explicit dependencies.
 - Lane keeps session after `READY`. Close only idle/done/absent session with saved turn.
-- Lesson = non-obvious, time-saving fact missing from docs and types. Max 20 words, names its subject. MUST include the duplicate-check `search` query in `context`.
+- Lesson = non-obvious, time-saving fact missing from docs and types. Max 20 words, names its subject. MUST carry the duplicate-check `search` query in its evidence.
 - NTK enforces ticket claims. Agents handle refusals and inspect failed launches via Herdr.
 - Add `awaiting-lane` only when dependencies are satisfied, no active hold exists, and the dispatch contract makes the ticket assignable.
 - Owner instructions strictly override any readiness tags.
