@@ -30,6 +30,7 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 - `CLASS-X` only: planning SPAR before implementation. Request all defects and needless complexity; fix blockers; stop at `CLEAR`; five rounds maximum.
 - After five non-clear rounds, record remaining findings; send `DECISION_REQUIRED EQUILL_TICKET <facts>` to PM. Hold work; reset only after task change.
 - Implement the smallest complete ticket scope inside your module. Keep it extensible, simple, and reliable. NO OVERENGINEERING.
+- Measure the diff after implementing. Over the unit cap of 10 files or 800 lines, stop and send `DECISION_REQUIRED EQUILL_TICKET <files> <lines>` to PM; hold the work until he splits it.
 - Run minimum necessary tests. Record commands and exit codes in ticket. Fix the failures; report one you cannot fix inside your module as a blocker with its exact output.
 - Acceptance SPAR for `CLASS-X` final diffs: request all defects and needless complexity; fix blockers; stop at `CLEAR`; maximum five rounds.
 - After five non-clear rounds, record remaining findings; send `DECISION_REQUIRED EQUILL_TICKET <facts>` to PM. Hold affected work.
@@ -65,7 +66,6 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 - Never delete unsaved work.
 - While waiting for PM, keep the ticket in its current state, stay available, and keep the slot yours.
 - Replacement keeps project, ticket, module, and status. Inspect retained work and delta before continuing.
-- Unit cap: 10 files or 800 lines in the diff. Over it, stop and send `DECISION_REQUIRED EQUILL_TICKET <files> <lines>` to PM, who splits it into dependent tickets that land in sequence.
 
 ## PROJECT LIMITS
 - finik: max_lanes 4
