@@ -30,7 +30,7 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 - `CLASS-X` only: planning SPAR before implementation. Request all defects and needless complexity; fix blockers; stop at `CLEAR`; five rounds maximum.
 - After five non-clear rounds, record remaining findings; send `DECISION_REQUIRED EQUILL_TICKET <facts>` to PM. Hold work; reset only after task change.
 - Implement the smallest complete ticket scope inside your module. Keep it extensible, simple, and reliable. NO OVERENGINEERING.
-- Run minimum necessary tests. Record commands and exit codes in ticket. Fix failures within the three-attempt test limit.
+- Run minimum necessary tests. Record commands and exit codes in ticket. Fix the failures; report one you cannot fix inside your module as a blocker with its exact output.
 - Acceptance SPAR for `CLASS-X` final diffs: request all defects and needless complexity; fix blockers; stop at `CLEAR`; maximum five rounds.
 - After five non-clear rounds, record remaining findings; send `DECISION_REQUIRED EQUILL_TICKET <facts>` to PM. Hold affected work.
 - Save verification evidence, SPAR findings, decisions, and artifacts in ticket. Commit the verified implementation.
@@ -39,7 +39,7 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 - Record candidate and target-base SHAs in the ticket; set `to_test`. Land the candidate directly upon tests passing.
 - Never edit or rebase after the verified base is fixed. Re-verify the base instead of pushing a stale candidate.
 - Push with `git push --force-with-lease=<target-ref>:<base-sha> <remote> <commit-sha>:<target-ref>`. Never use plain `--force` and never `--no-verify`: the lease is what refuses a stale base, and the hooks are what run the tests.
-- Record the outcome in the ticket. Resolve unknown outcomes before another push; follow landing retry rules. Report to PM once, at the closing step.
+- Record the outcome in the ticket. A lease refusal means rebase and land again; a rejected push is reported at once. Resolve an unknown outcome before pushing again. Report to PM once, at the closing step.
 - Fetch remote; run `git merge-base --is-ancestor <commit-sha> <fetched-target-sha>`. Record whether the candidate entered current target history.
 - If ancestry not established, report exact result to PM. Do not guess success or retry unknown outcomes.
 - After verified landing, remove dedicated worktree and local ticket branch. Record cleanup in ticket. Never delete the shared target branch.
@@ -49,7 +49,7 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 ## COMMUNICATION RULES
 - Treat a task as complete only upon verifiable outcome in the target system (ticket closed, candidate landed). Delivery receipts, sent messages, timers and empty queues indicate communication state. Continue parallel work independently immediately after dispatching a request.
 - Send `DECISION_REQUIRED EQUILL_TICKET <facts>` to PM; reread ticket before applying `DECISION`.
-- After 3 failed landings, record the exact error and send `BLOCKED EQUILL_TICKET <exact error>` to PM. Stop blocked work.
+- A push the remote rejected on its own terms is a real failure: record the exact error and send `BLOCKED EQUILL_TICKET <exact error>` to PM at once. Stop blocked work.
 - Answer `STATE_REQUEST EQUILL_TICKET` with `STATE EQUILL_TICKET <state> <current-action> <next-action>`.
 - Use English. Russian allowed with Owner.
 - Use the NTK, Equill and codebase-memory MCP tools. If one is not loaded, escalate and stop the work that needs it. Never substitute the ntk or equill CLI.
@@ -61,7 +61,6 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 - `BLOCKED` is only for unresolved blockers not represented by a ticket dependency (like missing access).
 - Once dependency is `done`, NTK can select the `open` ticket again.
 - A refused lease is not a failure: re-verify the base, rebase, and land again. Preserve the same worktree.
-- After third attempt, send `BLOCKED EQUILL_TICKET landing_conflict_exhausted`. Never make fourth attempt; counter survives restarts.
 - If candidate already landed, finish cleanup and acceptance without pushing again.
 - Never delete unsaved work.
 - While waiting for PM, keep the ticket in its current state, stay available, and keep the slot yours.
