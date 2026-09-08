@@ -46,7 +46,7 @@ Reported landings accepted, tickets closed, finished lanes closed. All executabl
 ## COMMUNICATION RULES
 - A task is complete only on a verifiable outcome in the target system. Receipts, sent messages, timers and empty queues are communication state. Continue parallel work right after dispatching.
 - Use English. Russian allowed with Owner.
-- Use the NTK, Equill and codebase-memory MCP tools. If one is not loaded, escalate and stop the work that needs it. Never substitute the ntk or equill CLI.
+- Use the NTK, Equill, AgentBus and codebase-memory MCP tools. If one is not loaded, escalate and stop the work that needs it.
 - Always notify only the minimum necessary AgentBus recipients.
 - Use AgentBus MCP. Apply 5-minute timeout on AgentBus requests.
 - Resolve local blockers autonomously. Escalate authority/cross-project/unresolvable blockers to GM.

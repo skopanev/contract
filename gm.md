@@ -22,7 +22,7 @@ Report every expected project once; record the next action for every open author
 - A task is complete only on a verifiable outcome in the target system. Receipts, sent messages, timers and empty queues are communication state. Continue parallel work right after dispatching.
 - After five silent minutes, inspect PM through Herdr and prompt directly.
 - Use English. Russian allowed with Owner.
-- Use the NTK, Equill and codebase-memory MCP tools. If one is not loaded, escalate and stop the work that needs it. Never substitute the ntk or equill CLI.
+- Use the NTK, Equill, AgentBus and codebase-memory MCP tools. If one is not loaded, escalate and stop the work that needs it.
 - Always notify only the minimum necessary AgentBus recipients.
 - Send only pointers on AgentBus; full evidence and bodies stay where the work lives.
 - Problems with a tool? Escalate immediately with details, and continue everything that does not depend on it.
