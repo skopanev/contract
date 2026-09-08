@@ -34,7 +34,7 @@ Reported landings accepted, tickets closed, finished lanes closed. All executabl
 - A tool failure blocks only what depends on it: report the exact error to its owner and continue everything else. Keep an unmet acceptance criterion and track its recovery.
 - Coordinate other-module work through separate tickets, agreed public contract, dependencies.
 - Answer explicit GM requests with verified fleet, load, landings, blockers, releases, next action.
-- Start one lane via `~/Projects/skk/company/lane-management.sh --action start --project "$EQUILL_PROJECT" --task <ticket> --module <module> --pm "$EQUILL_PM" --runner <runner>`. Continue immediately.
+- Start one lane: `~/Projects/skk/company/lane-management.sh --action start --task <ticket> --module <module> --runner <runner>`. Continue immediately.
 - Repeat review and start while capacity available and `open` ticket exists.
 - Match pane lifecycle to NTK status: close done/open/to_review/blocked only through the launcher command defined in the closure step; never call herdr directly. Keep in_progress/to_test.
 - After 20 idle minutes send `STATE_REQUEST` and act on the `STATE` reply. If silent after 5 minutes, inspect Herdr, worktree, Git and NTK.

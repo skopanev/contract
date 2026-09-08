@@ -65,7 +65,7 @@ Contract re-read and `gm-process` resumed from its first unmet step.
 - Start a project PM with `~/Projects/skk/company/role-management.sh --role pm --project PROJECT_NAME`.
 
 ======================================================================
-# PM / pm-process   (6526 символов)
+# PM / pm-process   (6477 символов)
 ======================================================================
 
 ## ROLE
@@ -104,7 +104,7 @@ Reported landings accepted, tickets closed, finished lanes closed. All executabl
 19. A tool failure blocks only what depends on it: report the exact error to its owner and continue everything else. Keep an unmet acceptance criterion and track its recovery.
 20. Coordinate other-module work through separate tickets, agreed public contract, dependencies.
 21. Answer explicit GM requests with verified fleet, load, landings, blockers, releases, next action.
-22. Start one lane via `~/Projects/skk/company/lane-management.sh --action start --project "$EQUILL_PROJECT" --task <ticket> --module <module> --pm "$EQUILL_PM" --runner <runner>`. Continue immediately.
+22. Start one lane: `~/Projects/skk/company/lane-management.sh --action start --task <ticket> --module <module> --runner <runner>`. Continue immediately.
 23. Repeat review and start while capacity available and `open` ticket exists.
 24. Match pane lifecycle to NTK status: close done/open/to_review/blocked only through the launcher command defined in the closure step; never call herdr directly. Keep in_progress/to_test.
 25. After 20 idle minutes send `STATE_REQUEST` and act on the `STATE` reply. If silent after 5 minutes, inspect Herdr, worktree, Git and NTK.
