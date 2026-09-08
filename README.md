@@ -8,7 +8,7 @@
 ## UNIVERSAL RULES
 
 These rules apply to all roles (GM, PM, Lane) globally:
-- Problems with a tool? Escalate immediately, with details: the tool, the exact command and its exact output. A defect in an internal tool is never knowledge — never write it as a lesson or a finding. If you must work around it to keep moving, the workaround belongs in the ticket, never in memory.
+- Problems with a tool? Escalate immediately, with details: the tool, the exact command and its exact output. A defect in an internal tool is an immediate blocker to report. The workaround belongs in the ticket.
 - Always notify only the minimum necessary AgentBus recipients.
 - Use English. With Owner you can use Russian.
 - Report verified facts; mark unsupported claims `UNKNOWN`.
@@ -43,13 +43,13 @@ These rules apply to all roles (GM, PM, Lane) globally:
 |---|---|---|
 | GM | `gm-process` | Межпроектные приоритеты, полномочия, глобальные роли/процессы/правила; решения вне полномочий PM. Толчок по таймеру — `gm-heartbeat` |
 | PM | `pm-process` | Подготовить tickets, назначить работу, разблокировать Lane, принять посадку по трём проверкам |
-| Lane | `lane-unit` | Один ticket в одном module: реализация, необходимые tests, commit, rebase, push и cleanup |
+| Lane | `lane-unit` | Один ticket в одном module: реализация, необходимые tests, commit, rebase, push и cleanup. Лимит объёма: 10 файлов или 800 строк; при превышении эскалировать PM для разбиения |
 
 PM не пишет код и не пушит за Lane. Lane сообщает проверенные факты; неподтверждённое отмечает `UNKNOWN`. Рабочая коммуникация агентов и долговечные артефакты — на английском.
 
 | Источник | Что из него берём |
 |---|---|
-| Equill | Роли, процессы, правила, project findings/lessons |
+| Equill | Роли, процессы, правила |
 | NTK | Tickets, module registry, dependencies, assignee, status и evidence |
 | Repository | Код, публичные interfaces, канонические docs и команды проверок |
 | AgentBus | Сообщения и подтверждение доставки, не состояние ticket |
@@ -153,7 +153,7 @@ Watchers, auto-index и индексация ticket worktrees запрещены
 
 **Rebase без конфликтов — без повторных tests, SPAR, проверки `patch-id` или дополнительного code review только из-за rebase.** После конфликтов Lane исправляет результат, запускает минимально необходимые tests и CLASS-X acceptance по итоговому diff, затем готовит новый candidate.
 
-Lane проверяет landing, удаляет свой worktree и локальную рабочую branch, записывает результат и knowledge proposals либо `NONE` в ticket, отправляет `READY <ticket>` и остаётся доступной для связи. PM независимо проверяет, что согласованный candidate входит в историю актуальной целевой ветки, а evidence и cleanup завершены. Затем ставит `done` и отправляет `DONE <ticket>`. Это единственный гейт успешной приёмки.
+Lane проверяет landing, удаляет свой worktree и локальную рабочую branch, записывает результат в ticket, отправляет `READY <ticket>` и остаётся доступной для связи. PM независимо проверяет, что согласованный candidate входит в историю актуальной целевой ветки, а evidence и cleanup завершены. Затем ставит `done` и отправляет `DONE <ticket>`. Это единственный гейт успешной приёмки.
 
 ### Worktree, остановка и закрытие
 
@@ -199,7 +199,7 @@ Lane сначала пытается решить локальную пробл�
 
 После устранения blocker PM возвращает ticket в `in_progress` либо в очередь `open`, не сразу в `to_test`. Отмена закрывается в `done` с `resolution: CANCELLED <reason>`; это не успешный landing.
 
-При разборе `blocked`, `to_review` и `reviewed` PM применяет содержательные ответы и возвращает подготовленную работу в `open`. Ожидание реализации оформляется как `open` с dependencies; отсутствие необходимого технического решения или prerequisite — `blocked`; вопросы бизнесу или Legal — `to_review`. История, действующие исполнители и поручения сохраняются.
+При разборе `blocked`, `to_review` и `reviewed` PM применяет содержательные ответы и возвращает подготовленную работу в `open`. Ожидание реализации оформляется как `open` с dependencies; отсутствие необходимого технического решения или prerequisite — `blocked`; вопросы бизнесу — `to_review`. История, действующие исполнители и поручения сохраняются.
 
 После 24 часов без содержательного прогресса PM перепроверяет `blocked`/`to_review` и эскалирует нерешённые ticket, вопрос и требуемое решение указанному владельцу решения. Служебные обновления и напоминания не сбрасывают отсчёт. Неизменившийся вопрос повторяется не чаще раза в сутки; явные holds и даты review учитываются. Вопросы вне полномочий проекта идут по действующему маршруту через GM.
 
@@ -222,7 +222,7 @@ Ticket state и lifecycle pane — разные вещи. Ticket остаётс�
 
 **Единое правило коммуникации:** каждое сообщение о ticket имеет envelope `<TYPE> <ticket> <payload>`. Перед решением адресат читает актуальный ticket через NTK: module, status, dependencies и evidence. Тело задачи, tests и landing evidence в AgentBus не дублируются.
 
-**Evidence хранится один раз — в ticket:** команды и exit codes проверок, SPAR findings/решения, candidate/base SHA, результат landing и cleanup, knowledge proposals или `NONE`. При остановке добавляются сохранённые branch/SHA и точная причина.
+**Evidence хранится один раз — в ticket:** команды и exit codes проверок, SPAR findings/решения, candidate/base SHA, результат landing и cleanup. При остановке добавляются сохранённые branch/SHA и точная причина.
 
 | Сигнал | Направление | Смысл |
 |---|---|---|
@@ -300,11 +300,7 @@ Launcher передаёт в `EQUILL_PM` стабильный alias `<project-id
 
 ### Recovery и предел retry
 
-Сначала установить исход предыдущей попытки по ticket и актуальному remote. Если candidate уже входит в историю target, повторный push запрещён: завершить cleanup и приёмку. Ошибка cleanup не становится новой попыткой push.
-
-Пока исход push неизвестен, повторный push блокируется; остальные Lane и PM tick продолжают работу.
-
-После первой/второй подтверждённой неудачи push — тот же worktree, новый candidate и новая попытка. После третьей: `BLOCKED <ticket> landing_conflict_exhausted` и сохранение работы по разделу 3. Не больше трёх push attempts на данный landing; четвёртая попытка запрещена, счётчик переживает рестарты.
+Отказ по lease означает необходимость rebase и повторного push. Ошибка push от самого удалённого репозитория (хуки или конфликты) сразу возвращается в работу или эскалируется через `BLOCKED` с точной ошибкой. Никаких искусственных счётчиков попыток push нет.
 
 ## Приложение B. Настройки hooks и реестра
 
