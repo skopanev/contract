@@ -47,7 +47,6 @@ PM sends `DONE EQUILL_TICKET`, or final stop is recorded and all work preserved;
 - Fetch remote and rebase onto target branch. Skip repeated tests, SPAR, patch-id checks and review on a conflict-free rebase.
 - Resolve conflicts; run minimum necessary tests and CLASS-X acceptance on resulting diff; prepare new candidate.
 - Record candidate and target-base SHAs in the ticket; set `to_test`. Land the candidate directly upon tests passing.
-- On `CORRECTION`, return ticket to `in_progress` and continue in the same worktree.
 - Never edit or rebase after the verified base is fixed. Re-verify the base instead of pushing a stale candidate.
 - Push with `git push --force-with-lease=<target-ref>:<base-sha> <remote> <commit-sha>:<target-ref>`. Never use plain `--force` and never `--no-verify`: the lease is what refuses a stale base, and the hooks are what run the tests.
 - Record the outcome in the ticket. Resolve unknown outcomes before another push; follow landing retry rules. Report to PM once, at the closing step.
