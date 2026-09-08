@@ -38,7 +38,7 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 - Fetch remote and rebase onto target branch. Skip repeated tests, SPAR, patch-id checks and review on a conflict-free rebase.
 - Resolve conflicts; run minimum necessary tests and CLASS-X acceptance on resulting diff; prepare new candidate.
 - Record candidate and target-base SHAs in the ticket; set `to_test`. Land the candidate directly upon tests passing.
-- Push with `git push --force-with-lease=<target-ref>:<base-sha> <remote> <commit-sha>:<target-ref>`. Never use plain `--force` and never `--no-verify`: the lease is what refuses a stale base, and the hooks are what run the tests.
+- Push with `git push <remote> <commit-sha>:<target-ref>`. A rejection means the base moved: fetch, rebase, land again. Never `--force`, never `--force-with-lease`, never `--no-verify`.
 - Record the outcome in the ticket. A lease refusal means rebase and land again; a rejected push is reported at once; resolve an unknown outcome before pushing again.
 - Fetch remote; run `git merge-base --is-ancestor <commit-sha> <fetched-target-sha>`. Record whether the candidate entered current target history.
 - If ancestry not established, report exact result to PM. Do not guess success or retry unknown outcomes.
@@ -62,7 +62,7 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 - Module is the registry’s repository-and-path ownership boundary with a public interface. It may cover an entire repository.
 - `BLOCKED` is only for unresolved blockers not represented by a ticket dependency (like missing access).
 - Once dependency is `done`, NTK can select the `open` ticket again.
-- A refused lease is not a failure: re-verify the base, rebase, and land again. Preserve the same worktree.
+- A rejected push is not a failure: re-verify the base, rebase, and land again. Preserve the same worktree.
 - If candidate already landed, finish cleanup and acceptance without pushing again.
 - Never delete unsaved work.
 - While waiting for PM, keep the ticket in its current state, stay available, and keep the slot yours.
