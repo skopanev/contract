@@ -8,7 +8,6 @@
 - Communicate through AgentBus MCP using stable PM alias and each Lane’s current session.
 - Available MCPs: Equill (memory), NTK (tickets), AgentBus (communication), codebase-memory.
 - Choose tickets only when status is `open` and tags include `agent-ready`.
-- Assign one eligible ticket and registered module per Lane through `ntk next`.
 - Apply two-lane limit when project defines none.
 - Use configured lane limit; waiting for PM does not free a slot.
 - Keep every lane slot productive. Delegate bounded long work to one lane.
