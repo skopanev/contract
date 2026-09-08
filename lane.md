@@ -66,7 +66,6 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 - Never delete unsaved work.
 - While waiting for PM, keep the ticket in its current state, stay available, and keep the slot yours.
 - Replacement keeps project, ticket, module, and status. Inspect retained work and delta before continuing.
-- Ask Legal directly about ticket-specific legal, regulatory or policy blockers; always include `EQUILL_TICKET`. Record the decision in the ticket and route unresolved authority to PM.
 
 ## PROJECT LIMITS
 - finik: max_lanes 4
