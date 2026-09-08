@@ -37,12 +37,12 @@ PM sends `DONE EQUILL_TICKET`, or final stop is recorded and all work preserved;
 - Never start watchers or index worktrees; do not repeat preflight per prompt or after conflict-free rebases.
 - On CBM failure, record exact error; inspect source. If scope/contracts remain unclear, send `BLOCKED EQUILL_TICKET <exact error>` to PM.
 - Classify `CLASS-X`: money, migrations/data loss, concurrency/idempotency/retries, security/PII, public contracts, irreversible behavior, plus project risks.
-- `CLASS-X` only: planning SPAR before implementation. Request all defects and needless complexity; fix blockers; stop at `CLEAR`; three rounds maximum.
-- After three non-clear rounds, record remaining findings; send `DECISION_REQUIRED EQUILL_TICKET <facts>` to PM. Hold work; reset only after task change.
+- `CLASS-X` only: planning SPAR before implementation. Request all defects and needless complexity; fix blockers; stop at `CLEAR`; five rounds maximum.
+- After five non-clear rounds, record remaining findings; send `DECISION_REQUIRED EQUILL_TICKET <facts>` to PM. Hold work; reset only after task change.
 - Implement the smallest complete ticket scope inside your module. Keep it extensible, simple, and reliable. NO OVERENGINEERING.
-- Run minimum necessary tests. Record commands and exit codes in ticket. Fix failures within shared three-attempt limit.
-- Acceptance SPAR for `CLASS-X` final diffs: request all defects and needless complexity; fix blockers; stop at `CLEAR`; maximum three rounds.
-- After three non-clear rounds, record remaining findings; send `DECISION_REQUIRED EQUILL_TICKET <facts>` to PM. Hold affected work.
+- Run minimum necessary tests. Record commands and exit codes in ticket. Fix failures within the three-attempt test limit.
+- Acceptance SPAR for `CLASS-X` final diffs: request all defects and needless complexity; fix blockers; stop at `CLEAR`; maximum five rounds.
+- After five non-clear rounds, record remaining findings; send `DECISION_REQUIRED EQUILL_TICKET <facts>` to PM. Hold affected work.
 - Save verification evidence, SPAR findings, decisions, and artifacts in ticket. Commit the verified implementation.
 - Fetch remote and rebase onto target branch. Skip repeated tests, SPAR, patch-id checks and review on a conflict-free rebase.
 - Resolve conflicts; run minimum necessary tests and CLASS-X acceptance on resulting diff; prepare new candidate.
