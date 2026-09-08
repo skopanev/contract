@@ -2,7 +2,7 @@
 
 
 ======================================================================
-# GM / gm-process   (2151 символов)
+# GM / gm-process   (2252 символов)
 ======================================================================
 
 ## ROLE
@@ -31,11 +31,12 @@ Report every expected project once; record the next action for every open author
 - Use English. Russian allowed with Owner.
 - Use the NTK, Equill and codebase-memory MCP tools. If one is not loaded, escalate and stop the work that needs it. Never substitute the `ntk or equill CLI`.
 - Always notify only the minimum necessary AgentBus recipients.
+- Send only ticket pointers via AgentBus; store full evidence and bodies exclusively inside tickets.
 - Problems with a tool? Escalate immediately, with details.
 - Start a project PM with `~/Projects/skk/company/role-management.sh --role pm --project PROJECT_NAME`.
 
 ======================================================================
-# GM / gm-heartbeat   (1329 символов)
+# GM / gm-heartbeat   (1430 символов)
 ======================================================================
 
 ## ROLE
@@ -59,11 +60,12 @@ Contract re-read and `gm-process` resumed from its first unmet step.
 - Use English. Russian allowed with Owner.
 - Use the NTK, Equill and codebase-memory MCP tools. If one is not loaded, escalate and stop the work that needs it. Never substitute the `ntk or equill CLI`.
 - Always notify only the minimum necessary AgentBus recipients.
+- Send only ticket pointers via AgentBus; store full evidence and bodies exclusively inside tickets.
 - Problems with a tool? Escalate immediately, with details.
 - Start a project PM with `~/Projects/skk/company/role-management.sh --role pm --project PROJECT_NAME`.
 
 ======================================================================
-# PM / pm-process   (6425 символов)
+# PM / pm-process   (6526 символов)
 ======================================================================
 
 ## ROLE
@@ -120,6 +122,7 @@ Reported landings accepted, tickets closed, finished lanes closed. All executabl
 - Use AgentBus MCP. Apply 5-minute timeout on AgentBus requests.
 - Resolve local blockers autonomously. Escalate authority/cross-project/unresolvable blockers to GM.
 - On a tool failure, record the exact error and escalate it at once. Continue every action that does not depend on that tool.
+- Send only ticket pointers via AgentBus; store full evidence and bodies exclusively inside tickets.
 - Problems with a tool? Escalate immediately, with details.
 
 ## TICKETING RULES
@@ -132,7 +135,7 @@ Reported landings accepted, tickets closed, finished lanes closed. All executabl
 - Owner instructions strictly override any readiness tags.
 
 ======================================================================
-# PM / pm-triage   (3851 символов)
+# PM / pm-triage   (3952 символов)
 ======================================================================
 
 ## ROLE
@@ -169,6 +172,7 @@ Ticket readiness is validated and recorded.
 - Use AgentBus MCP. Apply 5-minute timeout on AgentBus requests.
 - Resolve local blockers autonomously. Escalate authority/cross-project/unresolvable blockers to GM.
 - On a tool failure, record the exact error and escalate it at once. Continue every action that does not depend on that tool.
+- Send only ticket pointers via AgentBus; store full evidence and bodies exclusively inside tickets.
 - Problems with a tool? Escalate immediately, with details.
 
 ## TICKETING RULES
@@ -181,7 +185,7 @@ Ticket readiness is validated and recorded.
 - Owner instructions strictly override any readiness tags.
 
 ======================================================================
-# LANE / lane-unit   (7085 символов)
+# LANE / lane-unit   (7186 символов)
 ======================================================================
 
 ## ROLE
@@ -240,6 +244,7 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 - Use English. Russian allowed with Owner.
 - Use the NTK, Equill and codebase-memory MCP tools. If one is not loaded, escalate and stop the work that needs it. Never substitute the `ntk or equill CLI`.
 - Always notify only the minimum necessary AgentBus recipients.
+- Send only ticket pointers via AgentBus; store full evidence and bodies exclusively inside tickets.
 - Problems with a tool? Escalate immediately, with details.
 
 ## TICKETING RULES
@@ -255,7 +260,7 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 - Never start watchers and never index a worktree. Do not repeat the CBM preflight per prompt or after a conflict-free rebase.
 
 ======================================================================
-# WRITER / writer   (1525 символов)
+# WRITER / writer   (1626 символов)
 ======================================================================
 
 ## ROLE
@@ -283,4 +288,5 @@ One or two approved article URLs are live and sent to GM.
 - Use English. Russian allowed with Owner.
 - Use the NTK, Equill and codebase-memory MCP tools. If one is not loaded, escalate and stop the work that needs it. Never substitute the `ntk or equill CLI`.
 - Always notify only the minimum necessary AgentBus recipients.
+- Send only ticket pointers via AgentBus; store full evidence and bodies exclusively inside tickets.
 - Problems with a tool? Escalate immediately, with details.

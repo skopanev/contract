@@ -52,6 +52,7 @@ Reported landings accepted, tickets closed, finished lanes closed. All executabl
 - Use AgentBus MCP. Apply 5-minute timeout on AgentBus requests.
 - Resolve local blockers autonomously. Escalate authority/cross-project/unresolvable blockers to GM.
 - On a tool failure, record the exact error and escalate it at once. Continue every action that does not depend on that tool.
+- Send only ticket pointers via AgentBus; store full evidence and bodies exclusively inside tickets.
 - Problems with a tool? Escalate immediately, with details.
 
 ## TICKETING RULES

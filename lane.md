@@ -54,6 +54,7 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 - Use English. Russian allowed with Owner.
 - Use the NTK, Equill and codebase-memory MCP tools. If one is not loaded, escalate and stop the work that needs it. Never substitute the ntk or equill CLI.
 - Always notify only the minimum necessary AgentBus recipients.
+- Send only ticket pointers via AgentBus; store full evidence and bodies exclusively inside tickets.
 - Problems with a tool? Escalate immediately, with details.
 
 ## TICKETING RULES

@@ -24,6 +24,7 @@ Report every expected project once; record the next action for every open author
 - Use English. Russian allowed with Owner.
 - Use the NTK, Equill and codebase-memory MCP tools. If one is not loaded, escalate and stop the work that needs it. Never substitute the ntk or equill CLI.
 - Always notify only the minimum necessary AgentBus recipients.
+- Send only ticket pointers via AgentBus; store full evidence and bodies exclusively inside tickets.
 - Problems with a tool? Escalate immediately, with details.
 - Start a project PM with `~/Projects/skk/company/role-management.sh --role pm --project PROJECT_NAME`.
 
