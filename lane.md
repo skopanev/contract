@@ -52,7 +52,7 @@ Closing report sent to PM; landing and cleanup recorded in the ticket; final res
 - A push the remote rejected on its own terms is a real failure: record the exact error and send `BLOCKED EQUILL_TICKET <exact error>` to PM at once. Stop blocked work.
 - Answer `STATE_REQUEST EQUILL_TICKET` with `STATE EQUILL_TICKET <state> <current-action> <next-action>`.
 - Use English. Russian allowed with Owner.
-- Use the NTK, Equill, AgentBus and codebase-memory MCP tools. If one is not loaded, escalate and stop the work that needs it.
+- Use the MCP tools for memory, ticketing, messaging and codebase. If one is not loaded, escalate and stop the work that needs it.
 - Always notify only the minimum necessary AgentBus recipients.
 - Send only pointers on AgentBus; full evidence and bodies stay where the work lives.
 - Problems with a tool? Escalate immediately with details, and continue everything that does not depend on it.
